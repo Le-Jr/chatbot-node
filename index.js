@@ -1,20 +1,45 @@
-import express from "express";
+import { create, Whatsapp } from "@wppconnect-team/wppconnect";
 import "dotenv/config";
-import { create, start } from "./src/whatsapp_conn.js";
+import OpenAI from "openai";
 
-const app = express();
-const port = 3000;
-const OPEN_AI_KEY = process.env.OPEN_AI_KEY;
+create({
+  catchQR: (attempts, base64Qrimg) => {
+    console.log("Atempts to login: ", attempts);
+    console.log("QR code: ", base64Qrimg);
+  },
+  statusFind: (statusSession, session) => {
+    console.log("Status Session: ", statusSession);
+    console.log("Session: ", session);
+  },
+  session: "Teste",
+  headless: true,
+  useChrome: true,
+  devtools: false,
+  logQR: true,
+  updatesLog: true,
+  puppeteerOptions: { args: ["--no-sandbox"] },
+})
+  .then((client) => start(client))
+  .catch((err) => console.log(err));
 
-app.get("/", (req, res) => {
-  res.send("Olá mundo");
-});
+async function start(client) {
+  await client.onMessage((message) => {
+    if (message.body === "Oi") {
+      client
+        .sendText(message.from, "Olá tudo Bem?")
+        .then((result) => {
+          console.log("Result: ", result);
+        })
+        .catch((err) => console.log("Erro detectado: ", err));
+    }
+  });
 
-app.post("/webhook", (req, res) => {
-  create();
-  start();
-});
-
-app.listen(port, () => {
-  console.log(`Server running on the port ${port}`);
-});
+  await client
+    .sendImageAsSticker("+5521981265872@c.us", "./img.jpg")
+    .then((result) => {
+      console.log("Result: ", result); //return object success
+    })
+    .catch((erro) => {
+      console.error("Error when sending: ", erro); //return object error
+    });
+}
