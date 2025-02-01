@@ -35,7 +35,7 @@ async function start(client) {
   });
 
   await client
-    .sendImageAsSticker("+5521981265872@c.us", "./img.jpg")
+    .sendImageAsSticker("5521981265872@c.us", "./image.png")
     .then((result) => {
       console.log("Result: ", result); //return object success
     })
