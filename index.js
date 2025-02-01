@@ -1,6 +1,6 @@
 import { create, Whatsapp } from "@wppconnect-team/wppconnect";
 import "dotenv/config";
-import OpenAI from "openai";
+import { generateAnswer } from "./src/chatbot.js";
 
 create({
   catchQR: (attempts, base64Qrimg) => {
@@ -22,24 +22,18 @@ create({
   .then((client) => start(client))
   .catch((err) => console.log(err));
 
-async function start(client) {
-  await client.onMessage((message) => {
-    if (message.body === "Oi") {
-      client
-        .sendText(message.from, "Olá tudo Bem?")
-        .then((result) => {
-          console.log("Result: ", result);
-        })
-        .catch((err) => console.log("Erro detectado: ", err));
-    }
-  });
+function start(client) {
+  client.onMessage(async (message) => {
+    if (message.isGroupMsg || !message.body) return;
 
-  await client
-    .sendImageAsSticker("5521981265872@c.us", "./image.png")
-    .then((result) => {
-      console.log("Result: ", result); //return object success
-    })
-    .catch((erro) => {
-      console.error("Error when sending: ", erro); //return object error
-    });
+    const answer = await generateAnswer(message.body);
+    await client
+      .sendText(message.from, answer)
+      .then((result) => {
+        console.log("Result: ", result);
+
+        console.log(" Mensagem nova: ", message.body);
+      })
+      .catch((err) => console.log("Erro detectado: ", err));
+  });
 }

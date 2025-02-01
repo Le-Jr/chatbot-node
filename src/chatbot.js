@@ -9,13 +9,22 @@ const openai = new OpenAI({
   apiKey: key,
 });
 
-const message = await openai.chat.completions.create({
-  model: "gpt-4o",
-  max_completion_tokens: 200,
-  store: true,
-  //   stream: true,
-  messages: [{ role: "user", content: "Olá tudo bem?" }],
-  temperature: 0.5,
-});
+export async function generateAnswer(message) {
+  const prompt = `Você deve responder como um atendente de uma confeitaria chamada Doce e CIA.
+faça o melhor para atender os clientes de forma cordial e educada, sendo o mais atencioso e detalhado possível.
+vou passar abaixo a pergunta para que você possa responder:
+${message}
+`;
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o",
+    max_completion_tokens: 200,
+    store: true,
+    //   stream: true,
+    messages: [{ role: "user", content: prompt }],
+    temperature: 0.5,
+  });
 
-console.log(message.choices[0].message);
+  return completion.choices[0].message.content;
+}
+
+// console.log(message.choices[0].message);
