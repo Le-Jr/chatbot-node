@@ -26,5 +26,3 @@ ${message}
 
   return completion.choices[0].message.content;
 }
-
-// console.log(message.choices[0].message);
