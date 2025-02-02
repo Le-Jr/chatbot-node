@@ -1,11 +1,14 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
+import "dotenv/config";
+
+const mongo = process.env["MONGO_URI"];
 
 connectMongo().catch((err) => {
   console.log("Error connecting: ", err);
 });
 
 async function connectMongo() {
-  await mongoose.connect("mongodb://localhost:27017/chatbot");
+  await mongoose.connect(mongo);
 
   const clientSchema = mongoose.Schema({
     clientId: String,
