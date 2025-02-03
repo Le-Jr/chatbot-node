@@ -14,10 +14,20 @@ app.set("views", path.join(__dirname + "/views"));
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 
+const routes = express.Router();
+app.use("/routes", routes);
+
 app.get("/", async (req, res) => {
   const clients = await Client.find();
   // console.log(clients);
   res.render("clients", { clients });
+});
+
+routes.get("/clients/:clientId", async (req, res) => {
+  const client = await Client.findOne({ clientId: req.params.clientId });
+  console.log("Route id: ", req.params["clientId"]);
+
+  res.render("clientNew", { client });
 });
 
 app.listen(port, (err) => {

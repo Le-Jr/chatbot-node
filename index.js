@@ -21,7 +21,13 @@ async function startClientsSessions() {
   clients.forEach((client) => {
     create({
       session: client.clientId,
-      puppeteerOptions: { headless: true },
+      puppeteerOptions: {
+        headless: true,
+        args: [
+          "--no-sandbox",
+          `--user-data-dir=./tokens/${client.clientId}/chrome-profile  `,
+        ],
+      },
       catchQR: async (base64Qr, attempts) => {
         await Client.updateOne(
           { clientId: client.clientId },
