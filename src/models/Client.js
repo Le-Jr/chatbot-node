@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import "dotenv/config";
 
+mongoose.connect(process.env["MONGO_URI"]);
+
 export const clientSchema = mongoose.Schema({
   clientId: { type: String, unique: true },
   phoneNumber: String,
@@ -14,18 +16,19 @@ export const clientSchema = mongoose.Schema({
 
 export const Client = mongoose.model("Client", clientSchema);
 
-const doce = new Client({
-  clientId: "jose-sacole",
-  phoneNumber: 559999999,
-  sessionPath: "./src/sessions/jose-sacol",
-  config: {
-    companyName: "Jose Sacol",
-    FAQ: "Abrimos as 12:00h",
-  },
-});
+// const doce = new Client({
+//   clientId: "joao-pneu",
+//   phoneNumber: 559999999,
+//   sessionPath: "./src/sessions/maria-flores",
+//   config: {
+//     companyName: "Joao Pneu",
+//     FAQ: "Abrimos as 08:00h",
+//   },
+//   qrCode: "teste",
+// });
 
 // await doce.save();
-// return console.log(
+// console.log(
 //   `Criado com sucesso: ID:${doce.clientId} config: ${doce.config.companyName} `
 // );
 

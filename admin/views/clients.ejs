@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clientes Cadastrados</title>
+  </head>
+  <body>
+    <% clients.forEach(client => { %>
+    <div class="clients">
+      <h2><%= client.config.companyName%></h2>
+      <img src="<%= client.qrCode %>" alt="Qr Code" />
+    </div>
+    <% }) %>
+  </body>
+</html>

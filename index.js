@@ -1,9 +1,14 @@
 import "dotenv/config";
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 import { create } from "@wppconnect-team/wppconnect";
 import { Client } from "./src/models/Client.js";
 
-mongoose.connect(process.env["MONGO_URI"]);
+try {
+  await mongoose.connect(process.env.MONGO_URI);
+  console.log(" ✅ Conectado com sucesso");
+} catch (err) {
+  console.log("Erro ao conectar: ", err);
+}
 
 async function startClientsSessions() {
   //   try {
@@ -17,10 +22,10 @@ async function startClientsSessions() {
     create({
       session: client.clientId,
       puppeteerOptions: { headless: true },
-      catchQR: (qrCode) => {
-        Client.updateOne(
+      catchQR: async (base64Qr, attempts) => {
+        await Client.updateOne(
           { clientId: client.clientId },
-          { qrCode: client.qrCode }
+          { qrCode: base64Qr }
         );
       },
     }).then((client) => {
