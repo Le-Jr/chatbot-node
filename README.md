@@ -40,6 +40,30 @@ cd chatbot-node
 npm install
 ```
 
+## Como Contribuir
+
+1. Fork este repositório.
+
+2. Crie uma branch com sua funcionalidade:
+
+```bash
+git checkout -b minha-feature
+```
+
+3. Realize as modificações e commit:
+
+```bash
+git commit -m 'Adicionando nova funcionalidade'
+```
+
+4. Envie para o repositório remoto:
+
+```bash
+git push origin minha-feature
+```
+
+5. Abra um Pull Request.
+
 # Explicação da Lógica do Código
 
 A seguir, apresento uma visão geral da lógica do código com base nos seguintes arquivos:
