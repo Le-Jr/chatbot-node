@@ -2,6 +2,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import { create } from "@wppconnect-team/wppconnect";
 import { Client } from "./src/models/Client.js";
+import { generateAnswer } from "./src/utils/openai_config.js";
 
 try {
   await mongoose.connect(process.env.MONGO_URI);
@@ -39,7 +40,9 @@ async function startClientsSessions() {
         // Lógica da mensagem
 
         if (message.isGroupMsg || !message.body) return;
-        client.sendText(message.from, "Olá! tudo bem?");
+        const gptMessage = await generateAnswer(message.body);
+        client.sendText(message.from, gptMessage);
+        console.log(message);
       });
     });
   });

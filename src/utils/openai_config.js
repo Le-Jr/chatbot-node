@@ -10,9 +10,7 @@ const openai = new OpenAI({
 });
 
 export async function generateAnswer(message) {
-  const prompt = `Você deve responder como um atendente de uma confeitaria chamada Doce e CIA.
-faça o melhor para atender os clientes de forma cordial e educada, sendo o mais atencioso e detalhado possível.
-vou passar abaixo a pergunta para que você possa responder:
+  const prompt = `
 ${message}
 `;
   const completion = await openai.chat.completions.create({
