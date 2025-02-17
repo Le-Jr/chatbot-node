@@ -143,7 +143,6 @@ A seguir, apresento uma visão geral da lógica do código com base nos seguinte
 
 ## 4. `admin/server.js` e Interface Administrativa
 
-> **Nota:** O código específico do `admin/server.js` não foi compartilhado, mas a lógica provável é semelhante ao que está descrito abaixo.
 
 ### a. Configuração de um Servidor Express para Administração
 
