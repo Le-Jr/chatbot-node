@@ -182,7 +182,3 @@ Essa interface administrativa facilita:
 
 4. **Interface Administrativa:**  
    Um servidor Express fornece uma interface para visualizar e gerenciar os clientes e suas sessões, facilitando o monitoramento e a administração do sistema.
-
----
-
-Se precisar de mais detalhes ou tiver dúvidas sobre alguma parte específica do código, estou à disposição para ajudar!
