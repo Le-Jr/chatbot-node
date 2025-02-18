@@ -2,17 +2,26 @@ import express from "express";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import bodyParser from "body-parser";
-import { Client } from "../src/models/Client.js";
+import { Clients } from "../models/Clients.js";
 import mongoose from "mongoose";
+import { dataBase } from "./db/conn.js";
 
 const port = 3000;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
-mongoose.connect(process.env["MONGO_URI"]);
+// mongoose.connect(process.env["MONGO_URI"]);
 
 app.set("views", path.join(__dirname + "/views"));
 app.set("view engine", "ejs");
 app.use(express.static("public"));
+
+console.log("ai calica")
+
+dataBase.sync()
+  .then(() => console.log("Tabela Products sincronizada"))
+  .catch(err => console.error("Erro ao sincronizar a tabela:", err));
+app.listen(3000, () => {
+})
 
 const client = express.Router();
 app.use("/client", client);
