@@ -5,7 +5,7 @@ import { Clients } from "../models/Clients.js";
 export class clientController {
 
     static async startClientsSessions(clients) {
-        
+
         clients.forEach((client) => {
             create({
                 session: client.clientId,
@@ -15,24 +15,28 @@ export class clientController {
                         "--no-sandbox",
                         `--user-data-dir=./tokens/${client.id}/chrome-profile  `,
                     ],
-                },
-                catchQR: async (base64Qr, attempts) => {
-                    await Client.updateOne(
-                        { clientId: client.id },
-                        { qrCode: base64Qr }
-                    );
-                },
+                }
             }).then((client) => {
                 client.onMessage(async (message) => {
-                    // Lógica da mensagem
+                    const phoneNumber = message.from.slice(0, 13)
+                    if (phoneNumber != "status@broadc" && !message.isGroupMsg) {
+                        // Lógica da mensagem
+                        // if (message.isGroupMsg || !message.body) return;
+                        // const gptMessage = await generateAnswer(message.body);
+                        // client.sendText(message.from, gptMessage);
+                        console.log(message)
+                    } else {
+                        console.log("é status");
+                    }
 
-                    if (message.isGroupMsg || !message.body) return;
-                    const gptMessage = await generateAnswer(message.body);
-                    client.sendText(message.from, gptMessage);
-                    console.log(message);
                 });
             });
+            this.isPreviousContact(client)
         });
+    }
+
+    static async isPreviousContact(client, phoneNumber) {
+
     }
 
 }
