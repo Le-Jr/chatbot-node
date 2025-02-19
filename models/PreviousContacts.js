@@ -5,7 +5,7 @@ import { Clients } from "./Clients.js";
 export const PreviousContacts = dataBase.define(
     'previous_contacts',
     {
-        phoneNumber: DataTypes.INTEGER,
+        phoneNumber: DataTypes.STRING,
     }
 )
 

@@ -12,7 +12,9 @@ export const Clients = dataBase.define(
     phoneNumber: DataTypes.INTEGER,
     sessionPath: DataTypes.STRING,
     config: DataTypes.JSON,
-    qrCode: DataTypes.TEXT
+    qrCode: DataTypes.TEXT,
+    faq: DataTypes.TEXT
+
 }, {
     timestamps: false
 });
