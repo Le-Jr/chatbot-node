@@ -7,6 +7,8 @@ import bodyParser from "body-parser";
 import { dataBase } from "./db/conn.js";
 import { Clients } from "./models/Clients.js"
 import { clientController } from "./controllers/clientController.js";
+import { PreviousContacts } from "./models/PreviousContacts.js";
+
 
 const port = 3000;
 const __dirname = dirname(fileURLToPath(import.meta.url));
