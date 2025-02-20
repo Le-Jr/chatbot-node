@@ -3,7 +3,6 @@ import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import bodyParser from "body-parser";
 import { Clients } from "../models/Clients.js";
-import mongoose from "mongoose";
 import { dataBase } from "./db/conn.js";
 
 const port = 3000;
@@ -15,13 +14,13 @@ app.set("views", path.join(__dirname + "/views"));
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 
-console.log("ai calica")
+console.log("ai calica");
 
-dataBase.sync()
+dataBase
+  .sync()
   .then(() => console.log("Tabela Products sincronizada"))
-  .catch(err => console.error("Erro ao sincronizar a tabela:", err));
-app.listen(3000, () => {
-})
+  .catch((err) => console.error("Erro ao sincronizar a tabela:", err));
+app.listen(3000, () => {});
 
 const client = express.Router();
 app.use("/client", client);
@@ -41,7 +40,7 @@ client.get("/:clientId", async (req, res) => {
 
 app.listen(port, (err) => {
   if (err) {
-    return console.log("Errror connecting");
+    return console.log("Error connecting");
   }
   console.log(`Server running on the port ${port}`);
 });
