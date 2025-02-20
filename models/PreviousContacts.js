@@ -6,6 +6,7 @@ export const PreviousContacts = dataBase.define(
     'previous_contacts',
     {
         phoneNumber: DataTypes.STRING,
+        context: DataTypes.TEXT,
     }
 )
 
