@@ -4,3 +4,4 @@ import { ServerController } from "../controllers/ServerController.js";
 
 router.get("/", ServerController.initialPage);
 router.get("/register", ServerController.registerPage);
+router.post("/register", ServerController.createUser);

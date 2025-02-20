@@ -13,4 +13,18 @@ export class ServerController {
   static registerPage(req, res) {
     res.render("register");
   }
+
+  static async createUser(req, res) {
+    const user = {
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+    };
+
+    console.log(user);
+
+    await Clients.create(user);
+
+    res.redirect("/client");
+  }
 }
