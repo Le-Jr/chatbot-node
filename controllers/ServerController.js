@@ -1,5 +1,6 @@
 import { raw } from "express";
 import { Clients } from "../models/Clients.js";
+import bcrypt from "bcrypt";
 
 export class ServerController {
   static async initialPage(req, res) {
@@ -15,10 +16,11 @@ export class ServerController {
   }
 
   static async createUser(req, res) {
+    const password = await bcrypt.hash(req.body.password, 10);
     const user = {
       name: req.body.name,
       email: req.body.email,
-      password: req.body.password,
+      password: password,
     };
 
     console.log(user);
