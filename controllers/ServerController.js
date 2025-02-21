@@ -7,8 +7,7 @@ export class ServerController {
     const clients = await Clients.findAll({ raw: true });
 
     res.render("clients", { clients });
-    console.log("Chegou aqui");
-    // res.send("Hello world!");
+    console.log("Got heree!");
   }
 
   static registerPage(req, res) {
@@ -28,5 +27,27 @@ export class ServerController {
     await Clients.create(user);
 
     res.redirect("/client");
+  }
+
+  static async readUser(req, res) {
+    const id = req.params.id;
+    const client = await Clients.findOne({ where: { id: id }, raw: true });
+
+    res.render("readClients", { client });
+  }
+
+  static async updateUser(req, res) {
+    const id = req.params.id;
+    const name = req.body.name;
+    const email = req.body.email;
+
+    let client = await Clients.update(
+      { name: name, email: email },
+      { where: { id: id } }
+    );
+
+    client = await Clients.findOne({ where: { id: id }, raw: true });
+    console.log("Esse é o cliente: ", client);
+    res.render("readClients", { client });
   }
 }
