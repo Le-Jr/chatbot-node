@@ -17,7 +17,18 @@ export class clientController {
                         "--no-sandbox",
                         `--user-data-dir=./tokens/${client.id}/chrome-profile  `,
                     ],
-                }
+                },
+                catchQR: async (base64Qr, attempts) => {
+                    await Clients.update(
+                        { qrCode: base64Qr },
+                        {
+                            where: {
+                                client: client.clientId
+                            }
+                        }
+                    );
+                },
+
             }).then((client) => {
                 client.onMessage(async (message) => {
                     const phoneNumber = message.from.slice(0, 13)
@@ -41,18 +52,8 @@ export class clientController {
         }
         return false
     }
-
-    static async getContextMessage(client, phoneNumber) {
-
-    }
-
     static async sendMessage(message, client, clientInfos, phoneNumber) {
         if (phoneNumber != "status@broadc" && !message.isGroupMsg) {
-            // Lógica da mensagem
-            // if (message.isGroupMsg || !message.body) return;
-            
-            
-            // client.sendText(message.from, gptMessage);
             const isPreviousContact = await this.isPreviousContact(clientInfos.id, phoneNumber)
             if (isPreviousContact) {
 
@@ -68,9 +69,6 @@ export class clientController {
                     }
                 },
                 )
-                
-
-
                 client.sendText(message.from, gptMessage);
             } else {
                 await PreviousContacts.create({
