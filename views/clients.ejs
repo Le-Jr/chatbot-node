@@ -8,7 +8,7 @@
   <body>
     <% clients.forEach(client => { %>
     <div class="clients">
-      <h2><%= client.config.companyName%></h2>
+      <h2><%= client.name%></h2>
       <img src="<%= client.qrCode %>" alt="Qr Code" />
     </div>
     <% }) %>
