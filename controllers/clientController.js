@@ -49,41 +49,7 @@ export class clientController {
   }
 
   static async getContextMessage(client, phoneNumber) { }
-
-  static async sendMessage(message, client, clientInfos, phoneNumber) {
-    if (phoneNumber != "status@broadc" && !message.isGroupMsg) {
-      // Lógica da mensagem
-      // if (message.isGroupMsg || !message.body) return;
-
-      // client.sendText(message.from, gptMessage);
-      const isPreviousContact = await this.isPreviousContact(
-        clientInfos.id,
-        phoneNumber
-      );
-      if (isPreviousContact) {
-        const gptMessage = await generateAnswer(
-          `${isPreviousContact.context}\n ${phoneNumber}:${message.body}`
-        );
-        await PreviousContacts.update(
-          {
-            phoneNumber: phoneNumber,
-            clientId: clientInfos.id,
-            context: `${isPreviousContact.context}\n ${phoneNumber}:${message.body}\n chatgpt:${gptMessage}\n`,
-          },
-          {
-            where: {
-              phoneNumber: phoneNumber,
-              clientId: client
-            }
-          })
-        console.log(isContact)
-        if (isContact.length > 0) {
-          return isContact[0]
-        }
-        return false
-      }
-    }
-  }
+  
   static async sendMessage(message, client, clientInfos, phoneNumber) {
     if (phoneNumber != "status@broadc" && !message.isGroupMsg) {
       const isPreviousContact = await this.isPreviousContact(clientInfos.id, phoneNumber)
