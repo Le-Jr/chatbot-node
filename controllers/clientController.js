@@ -4,37 +4,31 @@ import { Clients } from "../models/Clients.js";
 import { PreviousContacts } from "../models/PreviousContacts.js";
 
 export class clientController {
-  static async startClientsSessions(clients) {
-    clients.forEach((client) => {
-      const currentClient = client;
-      console.log("Cliente atual: ", currentClient);
-      create({
-        session: String(client.id),
-        puppeteerOptions: {
-          headless: true,
-          args: [
-            "--no-sandbox",
-            `--user-data-dir=./tokens/${client.id}/chrome-profile  `,
-          ],
-        },
-        catchQR: async (base64Qr, attempts) => {
-          console.log("qrcode: ", base64Qr);
-          const id = client.id;
-          await Clients.update(
-            { qrCode: base64Qr },
-            {
-              where: {
-                id: String(id),
-              },
-            }
-          );
-        },
-      }).then((client) => {
-        client.onMessage(async (message) => {
-          const phoneNumber = message.from.slice(0, 13);
-          this.sendMessage(message, client, currentClient, phoneNumber);
-        });
+  static async startClientSession(res, client) {
+    const currentClient = client
+    console.log(currentClient)
+    create({
+      session: currentClient.id,
+      puppeteerOptions: {
+        headless: true,
+        args: [
+          "--no-sandbox",
+          `--user-data-dir=./tokens/${currentClient.id}/chrome-profile  `,
+        ], session: {
+          autoClose: 0 // Defina 0 para desativar o auto-close
+        }
+      },
+      catchQR: async (base64Qr, attempts) => {
+        currentClient["currentUser"].qrCode = base64Qr
+        await res.render("conect", { currentUser: currentClient["currentUser"] })
+      },
+
+    }).then((client) => {
+      client.onMessage(async (message) => {
+        const phoneNumber = message.from.slice(0, 13)
+        this.sendMessage(message, client, currentClient["currentUser"], phoneNumber)
       });
+
     });
   }
 
@@ -53,45 +47,35 @@ export class clientController {
     return false;
   }
 
-  static async getContextMessage(client, phoneNumber) {}
-
+  static async getContextMessage(client, phoneNumber) { }
+  
   static async sendMessage(message, client, clientInfos, phoneNumber) {
     if (phoneNumber != "status@broadc" && !message.isGroupMsg) {
-      // Lógica da mensagem
-      // if (message.isGroupMsg || !message.body) return;
-
-      // client.sendText(message.from, gptMessage);
-      const isPreviousContact = await this.isPreviousContact(
-        clientInfos.id,
-        phoneNumber
-      );
+      const isPreviousContact = await this.isPreviousContact(clientInfos.id, phoneNumber)
       if (isPreviousContact) {
-        const gptMessage = await generateAnswer(
-          `${isPreviousContact.context}\n ${phoneNumber}:${message.body}`
-        );
-        await PreviousContacts.update(
-          {
-            phoneNumber: phoneNumber,
-            clientId: clientInfos.id,
-            context: `${isPreviousContact.context}\n ${phoneNumber}:${message.body}\n chatgpt:${gptMessage}\n`,
-          },
-          {
-            where: {
-              phoneNumber: phoneNumber,
-              clientId: clientInfos.id,
-            },
-          }
-        );
 
+        const gptMessage = await generateAnswer(`${isPreviousContact.context}\n ${phoneNumber}:${message.body}`);
+        await PreviousContacts.update({
+          phoneNumber: phoneNumber,
+          clientId: clientInfos.id,
+          context: `${isPreviousContact.context}\n ${phoneNumber}:${message.body}\n chatgpt:${gptMessage}\n`
+        }, {
+          where: {
+            phoneNumber: phoneNumber,
+            clientId: clientInfos.id
+          }
+        },
+        )
         client.sendText(message.from, gptMessage);
       } else {
         await PreviousContacts.create({
           phoneNumber: phoneNumber,
           clientId: clientInfos.id,
-          context: `estou te usando como um atendente, e esse é o contexto da conversa que você deve seguir, lembre se de responder sempre a ultima pergunta do usuário sem ter que remeter diretamente esse script ${clientInfos.config} `,
-        });
+          context: `estou te usando como um atendente, e esse é o contexto da conversa que você deve seguir, lembre se de responder sempre a ultima pergunta do usuário sem ter que remeter diretamente esse script ${clientInfos.config} `
+        })
         client.sendText(message.from, clientInfos.faq);
       }
+
     } else {
       console.log("é status");
     }
