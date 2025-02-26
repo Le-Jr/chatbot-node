@@ -39,9 +39,11 @@ export class ServerController {
     const id = req.params.id;
     const name = req.body.name;
     const email = req.body.email;
+    const faq = req.body.faq;
+    const prompt = req.body.prompt;
 
     let client = await Clients.update(
-      { name: name, email: email },
+      { name: name, email: email, faq: faq, config: prompt },
       { where: { id: id } }
     );
 

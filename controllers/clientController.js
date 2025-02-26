@@ -4,7 +4,6 @@ import { Clients } from "../models/Clients.js";
 import { PreviousContacts } from "../models/PreviousContacts.js";
 
 export class clientController {
-
   static async startClientSession(res, client) {
     const currentClient = client
     console.log(currentClient)
