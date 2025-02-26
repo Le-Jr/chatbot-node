@@ -21,12 +21,13 @@ app.use(express.urlencoded({ extended: true }));
 
 dataBase.sync();
 app.use("/client", router);
-app.use("/",(req,res)=>{res.render("home")})
-
+app.use("/", (req, res) => {
+  res.render("home");
+});
 
 const clientes = await Clients.findAll({ raw: "true" });
 
-// clientController.startClientsSessions(clientes);
+// clientController.startClientSession(clientes);
 
 app.listen(port, (err) => {
   if (err) {
