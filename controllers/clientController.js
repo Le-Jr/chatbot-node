@@ -5,36 +5,31 @@ import { PreviousContacts } from "../models/PreviousContacts.js";
 
 export class clientController {
 
-  static async startClientsSessions(clients) {
+  static async startClientSession(res, client) {
+    const currentClient = client
+    console.log(currentClient)
+    create({
+      session: currentClient.id,
+      puppeteerOptions: {
+        headless: true,
+        args: [
+          "--no-sandbox",
+          `--user-data-dir=./tokens/${currentClient.id}/chrome-profile  `,
+        ], session: {
+          autoClose: 0 // Defina 0 para desativar o auto-close
+        }
+      },
+      catchQR: async (base64Qr, attempts) => {
+        currentClient["currentUser"].qrCode = base64Qr
+        await res.render("conect", { currentUser: currentClient["currentUser"] })
+      },
 
-    clients.forEach((client) => {
-      const currentClient = client
-      create({
-        session: client.clientId,
-        puppeteerOptions: {
-          headless: true,
-          args: [
-            "--no-sandbox",
-            `--user-data-dir=./tokens/${client.id}/chrome-profile  `,
-          ],
-        },
-        catchQR: async (base64Qr, attempts) => {
-          await Clients.update(
-            { qrCode: base64Qr },
-            {
-              where: {
-                client: client.clientId
-              }
-            }
-          );
-        },
-
-      }).then((client) => {
-        client.onMessage(async (message) => {
-          const phoneNumber = message.from.slice(0, 13)
-          this.sendMessage(message, client, currentClient, phoneNumber)
-        });
+    }).then((client) => {
+      client.onMessage(async (message) => {
+        const phoneNumber = message.from.slice(0, 13)
+        this.sendMessage(message, client, currentClient["currentUser"], phoneNumber)
       });
+
     });
   }
 
