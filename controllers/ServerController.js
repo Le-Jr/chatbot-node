@@ -1,16 +1,15 @@
 import { raw } from "express";
 import { Clients } from "../models/Clients.js";
 import bcrypt from "bcrypt";
+import { clientController } from "./clientController.js";
 
 export class ServerController {
   static async initialPage(req, res) {
-    const clients = await Clients.findAll({ raw: true });
-
-    res.render("clients", { clients });
-    console.log("Got heree!");
+    res.render("home");
   }
 
   static registerPage(req, res) {
+
     res.render("register");
   }
 
@@ -22,7 +21,6 @@ export class ServerController {
       password: password,
     };
 
-    console.log(user);
 
     await Clients.create(user);
 
@@ -30,6 +28,7 @@ export class ServerController {
   }
 
   static async readUser(req, res) {
+    console.log(req.params)
     const id = req.params.id;
     const client = await Clients.findOne({ where: { id: id }, raw: true });
 
@@ -47,7 +46,24 @@ export class ServerController {
     );
 
     client = await Clients.findOne({ where: { id: id }, raw: true });
-    console.log("Esse é o cliente: ", client);
     res.render("readClients", { client });
+  }
+  static async loginView(req, res) {
+    res.render("login")
+  }
+  static async loginUser(req, res) {
+    const user = {
+      email: req.body.email,
+      password: req.body.password
+    }
+    const currentUser = await Clients.findOne({
+      raw: true,
+      where:
+        { email: user.email }
+    })
+    bcrypt.compare(user.password, currentUser.password,(err, result) => {
+      return result
+    })
+    await clientController.startClientSession(res,{currentUser})
   }
 }
