@@ -7,14 +7,27 @@ export class clientController {
   static async startClientsSessions(clients) {
     clients.forEach((client) => {
       const currentClient = client;
+      console.log("Cliente atual: ", currentClient);
       create({
-        session: client.clientId,
+        session: String(client.id),
         puppeteerOptions: {
           headless: true,
           args: [
             "--no-sandbox",
             `--user-data-dir=./tokens/${client.id}/chrome-profile  `,
           ],
+        },
+        catchQR: async (base64Qr, attempts) => {
+          console.log("qrcode: ", base64Qr);
+          const id = client.id;
+          await Clients.update(
+            { qrCode: base64Qr },
+            {
+              where: {
+                id: String(id),
+              },
+            }
+          );
         },
       }).then((client) => {
         client.onMessage(async (message) => {
