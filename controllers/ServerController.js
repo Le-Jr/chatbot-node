@@ -2,6 +2,7 @@ import { raw } from "express";
 import { Clients } from "../models/Clients.js";
 import bcrypt from "bcrypt";
 import { clientController } from "./clientController.js";
+import { Wjt } from "../models/Wtj.js";
 
 export class ServerController {
   static async initialPage(req, res) {
@@ -61,9 +62,57 @@ export class ServerController {
       where:
         { email: user.email }
     })
-    bcrypt.compare(user.password, currentUser.password,(err, result) => {
-      return result
+    bcrypt.compare(user.password, currentUser.password, async (err, result) => {
+      if (result) {
+        let token = await Wjt.findOne({
+          where: {
+            clientId: currentUser.id
+          }
+        })
+        if (token) {
+          res.redirect(`user/${currentUser.id}/${token.wtjId}`)
+        } else {
+          await Wjt.create({ clientId: currentUser.id })
+          token = await Wjt.findOne({
+            where: {
+              clientId: currentUser.id
+            }
+          })
+          res.redirect(`user/${currentUser.id}/${token.wtjId}`)
+        }
+      } else {
+        res.send("login incorreto canalha")
+      }
     })
-    await clientController.startClientSession(res,{currentUser})
+
+
+
+    // await clientController.startClientSession(res,{currentUser})
+  }
+  static async loggedClient(req, res) {
+
+    res.render("logged")
+  }
+  static async authClient(req, res) {
+    
+    const user = await req.body
+    const teste = await Wjt.findOne({
+      where: {
+        clientId: user.id,
+        wtjId: user.token
+      }
+    })
+    if (teste) {
+
+      const currentUser = await Clients.findOne({ where: { id: user.id } })
+      res.json({ currentUser: currentUser })
+
+    }else{
+      res.json(false)
+    }
+
+
+
+
   }
 }
