@@ -92,7 +92,6 @@ export class ServerController {
     // await clientController.startClientSession(res,{currentUser})
   }
   static async loggedClient(req, res) {
-
     res.render("logged")
   }
   static async authClient(req, res) {

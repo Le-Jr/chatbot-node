@@ -7,6 +7,7 @@ const user = {
 localStorage.clear()
 localStorage.setItem("user", JSON.stringify(user))
 
+console.log("charlie brow")
 
 fetch(`/client/user/${user.id}/${user.token}`, {
     method: 'POST',
