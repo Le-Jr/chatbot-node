@@ -2,41 +2,58 @@ import { create } from "@wppconnect-team/wppconnect";
 import { generateAnswer } from "../utils/openai_config.js";
 import { Clients } from "../models/Clients.js";
 import { PreviousContacts } from "../models/PreviousContacts.js";
+import { Wjt } from "../models/Wtj.js"
 
 export class clientController {
-  static async startClientSession(res, client) {
-    const currentClient = client;
-    // console.log(currentClient);
-    create({
-      session: currentClient.id,
-      puppeteerOptions: {
-        headless: true,
-        args: [
-          "--no-sandbox",
-          `--user-data-dir=./tokens/${currentClient.id}/chrome-profile  `,
-        ],
-        session: {
-          autoClose: 0, // Defina 0 para desativar o auto-close
+  static async startClientSession(req, res) {
+
+
+    const auth = await Wjt.findOne({
+      where: {
+        clientId: req.body.id,
+        wtjId: req.body.token
+      }
+    })
+
+    console.log("aqui tem que passar")
+
+    if (auth) {
+      const currentUser = await Clients.findOne({
+        where: {
+          id: req.body.id,
+        }
+      })
+      console.log(currentUser.id)
+      await create({
+        session: String(currentUser.name),
+        puppeteerOptions: {
+          headless: true,
+          args: [
+            "--no-sandbox",
+            `--user-data-dir=./tokens/${currentUser.id}/chrome-profile`,
+          ],
+          session: {
+            autoClose: 0,
+          },
         },
-      },
-      catchQR: async (base64Qr, attempts) => {
-        currentClient["currentUser"].qrCode = base64Qr;
-        await res.render("conect", {
-          currentUser: currentClient["currentUser"],
+        catchQR: async (base64Qr, attempts) => {
+          currentUser.qrCode=base64Qr
+          res.json(currentUser)
+        }
+      }).then((client) => {
+        console.log("aqui é o then")
+        client.onMessage(async (message) => {
+          const phoneNumber = message.from.slice(0, 13);
+          this.sendMessage(
+            message,
+            client,
+            currentUser,
+            phoneNumber
+          );
         });
-      },
-    }).then((client) => {
-      client.onMessage(async (message) => {
-        const phoneNumber = message.from.slice(0, 13);
-        // console.log("Cliente Atual: ", currentClient["currentUser"]);
-        this.sendMessage(
-          message,
-          client,
-          currentClient["currentUser"],
-          phoneNumber
-        );
       });
-    });
+
+    }
   }
 
   static async isPreviousContact(client, phoneNumber) {
@@ -54,7 +71,7 @@ export class clientController {
     return false;
   }
 
-  static async getContextMessage(client, phoneNumber) {}
+  static async getContextMessage(client, phoneNumber) { }
 
   static async sendMessage(message, client, clientInfos, phoneNumber) {
     if (phoneNumber != "status@broadc" && !message.isGroupMsg) {
