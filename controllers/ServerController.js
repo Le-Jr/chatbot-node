@@ -3,6 +3,8 @@ import { Clients } from "../models/Clients.js";
 import bcrypt from "bcrypt";
 import { clientController } from "./clientController.js";
 import { Wjt } from "../models/Wtj.js";
+import "../config/googleAuth.js";
+import passport from "passport";
 
 export class ServerController {
   static async initialPage(req, res) {
@@ -10,7 +12,6 @@ export class ServerController {
   }
 
   static registerPage(req, res) {
-
     res.render("register");
   }
 
@@ -22,14 +23,13 @@ export class ServerController {
       password: password,
     };
 
-
     await Clients.create(user);
 
     res.redirect("/client");
   }
 
   static async readUser(req, res) {
-    console.log(req.params)
+    console.log(req.params);
     const id = req.params.id;
     const client = await Clients.findOne({ where: { id: id }, raw: true });
 
@@ -52,68 +52,86 @@ export class ServerController {
     res.render("readClients", { client });
   }
   static async loginView(req, res) {
-    res.render("login")
+    res.render("login");
   }
   static async loginUser(req, res) {
     const user = {
       email: req.body.email,
-      password: req.body.password
-    }
+      password: req.body.password,
+    };
     const currentUser = await Clients.findOne({
       raw: true,
-      where:
-        { email: user.email }
-    })
+      where: { email: user.email },
+    });
     bcrypt.compare(user.password, currentUser.password, async (err, result) => {
       if (result) {
         let token = await Wjt.findOne({
           where: {
-            clientId: currentUser.id
-          }
-        })
+            clientId: currentUser.id,
+          },
+        });
         if (token) {
-          res.redirect(`user/${currentUser.id}/${token.wtjId}`)
+          res.redirect(`user/${currentUser.id}/${token.wtjId}`);
         } else {
-          await Wjt.create({ clientId: currentUser.id })
+          await Wjt.create({ clientId: currentUser.id });
           token = await Wjt.findOne({
             where: {
-              clientId: currentUser.id
-            }
-          })
-          res.redirect(`user/${currentUser.id}/${token.wtjId}`)
+              clientId: currentUser.id,
+            },
+          });
+          res.redirect(`user/${currentUser.id}/${token.wtjId}`);
         }
       } else {
-        res.send("login incorreto canalha")
+        res.send("login incorreto canalha");
       }
-    })
-
-
+    });
 
     // await clientController.startClientSession(res,{currentUser})
   }
   static async loggedClient(req, res) {
-    res.render("logged")
+    res.render("logged");
   }
   static async authClient(req, res) {
-    
-    const user = await req.body
+    const user = await req.body;
     const teste = await Wjt.findOne({
       where: {
         clientId: user.id,
-        wtjId: user.token
-      }
-    })
+        wtjId: user.token,
+      },
+    });
     if (teste) {
-
-      const currentUser = await Clients.findOne({ where: { id: user.id } })
-      res.json({ currentUser: currentUser })
-
-    }else{
-      res.json(false)
+      const currentUser = await Clients.findOne({ where: { id: user.id } });
+      res.json({ currentUser: currentUser });
+    } else {
+      res.json(false);
     }
+  }
 
+  static googleAuth = passport.authenticate("google", {
+    scope: ["email", "profile"],
+    prompt: "select_account",
+  });
 
+  static googleCallback(req, res, next) {
+    passport.authenticate("google", (err, user, info) => {
+      if (err) return next(err);
+      if (!user) return res.redirect("/client/login");
 
+      req.logIn(user, (err) => {
+        if (err) return next(err);
+        console.log("✅ Usuário autenticado:", user);
+        return res.redirect("/client/sucesso");
+      });
+    })(req, res, next);
+    // console.log("🔄 googleCallback foi chamado!");
 
+    // passport.authenticate("google", {
+    //   successRedirect: "/sucesso",
+    //   failureRedirect: "/login",
+    // });
+  }
+
+  static googleSucess(req, res) {
+    res.send("Deu bom");
   }
 }
