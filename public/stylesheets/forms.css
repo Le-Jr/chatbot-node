@@ -1,0 +1,107 @@
+body {
+  display: flex;
+}
+p {
+  font-weight: var(--font-bold);
+}
+form {
+  height: 120vh;
+  width: 35%;
+  background-color: var(--primary-color);
+  justify-items: center;
+}
+input {
+  background-color: var(--body-color);
+  color: var(--text-color);
+  width: 50vh;
+  height: 7.5vh;
+  border: none;
+  border-radius: 8px;
+  padding: 5%;
+}
+label {
+  display: block;
+}
+input[type="submit"] {
+  background-color: var(--title-color);
+  color: var(--primary-color);
+  cursor: pointer;
+  width: 57.5vh;
+}
+input[type="submit"]:hover {
+  background-color: var(--primary-color);
+  color: var(--title-color);
+  border: solid 2px var(--title-color);
+  text-align: center;
+  font-weight: var(--font-semi-bold);
+  justify-content: center;
+  transition: 0.5s;
+}
+.logo-company {
+  height: 15vh;
+  margin-top: 5vh;
+}
+.form-input {
+  margin: 2.5vh 7.5vh 2.5vh 0;
+}
+.form-input .icon {
+  position: absolute;
+  width: 7vh;
+  height: 7vh;
+  padding: 1.5vh;
+  pointer-events: none;
+  background-color: var(--title-color);
+  border-radius: 8px;
+}
+.form-line-group {
+  display: flex;
+  margin-top: 1vh;
+  align-items: center;
+}
+.form-line {
+  display: flex;
+  width: 25vh;
+  height: 2px;
+  background-color: #c2c2c2;
+}
+#form-line-group-text {
+  font-weight: var(--font-normal);
+  margin: 0.5vh;
+  color: #c2c2c2;
+}
+.form-button {
+  border: solid 2px var(--title-color);
+  color: var(--title-color);
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 15px;
+  width: 57.5vh;
+  display: block;
+  text-align: center;
+  margin: 2vh;
+}
+.form-button:hover {
+  background-color: var(--title-color);
+  color: var(--primary-color);
+  transition: 0.5s;
+}
+.google-button {
+  border: solid 1px var(--title-color);
+  height: 5vh;
+  width: 5vh;
+  padding: 5px;
+  border-radius: 4px;
+  margin: 1vh;
+  cursor: pointer;
+}
+.logo-main {
+  width: 65%;
+  display: block;
+  justify-items: center;
+}
+#logo-mercurio {
+  height: 65vh;
+}
+#logo-mercurio {
+  margin: 15vh;
+}
