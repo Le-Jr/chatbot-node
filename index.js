@@ -1,15 +1,14 @@
 import "dotenv/config";
-
+import "dotenv/config";
 import express from "express";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import { dataBase } from "./db/conn.js";
-import { Clients } from "./models/Clients.js";
-import { clientController } from "./controllers/clientController.js";
-import { PreviousContacts } from "./models/PreviousContacts.js";
 import { router } from "./routes/clientRoutes.js";
 import { render } from "ejs";
-import { Wjt } from "./models/Wtj.js";
+import passport from "./config/googleAuth.js";
+import session from "express-session";
+import { Clients } from "./models/Clients.js";
 
 const port = 3000;
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -21,19 +20,35 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-dataBase.sync();
+app.use(
+  session({
+    secret: "segredo",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use("/client", router);
-app.use("/", (req, res) => {
+app.get("/", (req, res) => {
   res.render("home");
 });
+
+console.log("📌 Estratégias registradas no Passport:", passport._strategies);
 
 const clientes = await Clients.findAll({ raw: "true" });
 
 // clientController.startClientSession(clientes);
 
-app.listen(port, (err) => {
-  if (err) {
-    return console.log("Errror connecting");
-  }
-  console.log(`Server running on the port ${port}`);
+dataBase.sync().then(() => {
+  console.log("DB Sincronizado");
+  app.listen(port, (err) => {
+    if (err) {
+      return console.log("Errror connecting");
+    }
+    console.log(`Server running on the port ${port}`);
+  });
 });
