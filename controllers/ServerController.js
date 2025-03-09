@@ -109,6 +109,7 @@ export class ServerController {
 
   static googleAuth = passport.authenticate("google", {
     scope: ["email", "profile"],
+    prompt: "select_account",
   });
 
   static googleCallback(req, res, next) {
@@ -118,7 +119,6 @@ export class ServerController {
 
       req.logIn(user, (err) => {
         if (err) return next(err);
-        console.log("🔄 googleCallback foi chamado!");
         console.log("✅ Usuário autenticado:", user);
         return res.redirect("/client/sucesso");
       });
@@ -129,8 +129,6 @@ export class ServerController {
     //   successRedirect: "/sucesso",
     //   failureRedirect: "/login",
     // });
-
-    // console.log("Usuário autenticado:", req.user); // 👀 Veja se o usuário está realmente autenticado
   }
 
   static googleSucess(req, res) {
