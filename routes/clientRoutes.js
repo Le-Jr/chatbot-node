@@ -22,5 +22,7 @@ router.get("/sucesso", ServerController.googleSucess);
 // Rotas Autenticação
 router.get("/user/:id/:wtj", ServerController.loggedClient);
 router.post("/user/:id/:wtj", ServerController.authClient);
-router.post("/user/:id/:wtj/createSession",clientController.startClientSession)
-
+router.post(
+  "/user/:id/:wtj/createSession",
+  clientController.startClientSession
+);
