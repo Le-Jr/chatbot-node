@@ -1,7 +1,8 @@
 const path = window.location.pathname;
+const pathLocate = path.split("/");
 const user = {
-  id: path.slice(13, path.lastIndexOf("/")),
-  token: path.slice(path.lastIndexOf("/") + 1),
+  id: pathLocate[3],
+  token: pathLocate[4],
 };
 // "/client/user/5/c3eceaf9-636f-43ee-a0fb-bae4c69f583b"
 localStorage.clear();
