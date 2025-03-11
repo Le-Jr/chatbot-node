@@ -48,7 +48,7 @@ export class clientController {
               return;
             }
 
-            console.log("✅ Cliente criado adquadamente: ", client);
+            console.log("✅ Cliente criado adquadamente: ");
 
             // console.log("aqui é o then");
             client.onMessage(async (message) => {
@@ -59,7 +59,7 @@ export class clientController {
                 return;
               }
 
-              const phoneNumber = message.from.replace(/\D/g, "").slice(0, 13);
+              const phoneNumber = message.from.replace(/\D/g, "").slice(-13);
               // const phoneNumber = message.from.slice(0, 13);
 
               try {
@@ -109,7 +109,7 @@ export class clientController {
   static async getContextMessage(client, phoneNumber) {}
 
   static async sendMessage(message, client, clientInfos, phoneNumber) {
-    if (phoneNumber != "status@broadc" && !message.isGroupMsg) {
+    if (!message.from.includes("status") && !message.isGroupMsg) {
       const isPreviousContact = await this.isPreviousContact(
         clientInfos.id,
         phoneNumber
