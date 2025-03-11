@@ -28,7 +28,7 @@ export class ServerController {
 
     await Clients.create(user);
 
-    res.redirect("/client");
+    res.redirect("/");
   }
 
   static async readUser(req, res) {

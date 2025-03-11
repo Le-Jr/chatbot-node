@@ -115,14 +115,25 @@ export class clientController {
         phoneNumber
       );
       if (isPreviousContact) {
-        const gptMessage = await generateAnswer(
-          `${isPreviousContact.context}\n ${phoneNumber}:${message.body}`
+        const responseChunks = await generateAnswer(
+          `${isPreviousContact.context}\n ${phoneNumber}:${message.body}`,
+          (chunk) => {
+            console.log("Bot:", chunk);
+            return chunk;
+          }
         );
+
+        let updatedContext = `${isPreviousContact.context}\n ${phoneNumber}:${message.body}\n`;
+        responseChunks.forEach((chunk) => {
+          updatedContext += `chatgpt:${chunk}\n`; // Adiciona cada parte separada ao contexto
+        });
+
         await PreviousContacts.update(
           {
             phoneNumber: phoneNumber,
             clientId: clientInfos.id,
-            context: `${isPreviousContact.context}\n ${phoneNumber}:${message.body}\n chatgpt:${gptMessage}\n`,
+            context: updatedContext,
+            // context: `${isPreviousContact.context}\n ${phoneNumber}:${message.body}\n chatgpt:${gptMessage}\n`,
           },
           {
             where: {
@@ -131,7 +142,18 @@ export class clientController {
             },
           }
         );
-        client.sendText(message.from, gptMessage);
+
+        responseChunks.forEach(async (chunk, index) => {
+          await new Promise(
+            (resolve) =>
+              setTimeout(() => {
+                client.sendText(message.from, chunk); // Envia cada parte separada
+                resolve(); // Resolve a promise após o envio
+              }, index * 1000 + 500) // Incrementa o atraso para garantir a ordem
+          );
+        });
+
+        // client.sendText(message.from, gptMessage);
       } else {
         await PreviousContacts.create({
           phoneNumber: phoneNumber,
