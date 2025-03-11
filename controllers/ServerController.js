@@ -16,6 +16,9 @@ export class ServerController {
   }
 
   static async createUser(req, res) {
+    // console.log("Nome: ", req.body.name);
+    // console.log("Email: ", req.body.email);
+    // console.log("Senha: ", req.body.password);
     const password = await bcrypt.hash(req.body.password, 10);
     const user = {
       name: req.body.name,
@@ -82,7 +85,7 @@ export class ServerController {
           res.redirect(`user/${currentUser.id}/${token.wtjId}`);
         }
       } else {
-        res.send("login incorreto canalha");
+        res.status(404).send("Usuário não encontrado");
       }
     });
 
@@ -112,26 +115,44 @@ export class ServerController {
     prompt: "select_account",
   });
 
-  static googleCallback(req, res, next) {
-    passport.authenticate("google", (err, user, info) => {
-      if (err) return next(err);
-      if (!user) return res.redirect("/client/login");
+  static async googleCallback(req, res, next) {
+    try {
+      const user = req.user;
+      // console.log("usuário: ", user);
+      const googleId = user.googleId;
 
-      req.logIn(user, (err) => {
-        if (err) return next(err);
-        console.log("✅ Usuário autenticado:", user);
-        return res.redirect("/client/sucesso");
+      let existingUser = await Clients.findOne({
+        where: { googleId: googleId },
       });
-    })(req, res, next);
-    // console.log("🔄 googleCallback foi chamado!");
 
-    // passport.authenticate("google", {
-    //   successRedirect: "/sucesso",
-    //   failureRedirect: "/login",
-    // });
-  }
+      // if (!existingUser) {
+      //   // Se o usuário não existir, cria um novo
+      //   const [newUser] = await Clients.findOrCreate({
+      //     where: { googleId: user.id },
+      //     defaults: {
+      //       name: user.displayName, // Nome do Google
+      //       email: user.email || "", // Email do Google
+      //     },
+      //   });
 
-  static googleSucess(req, res) {
-    res.send("Deu bom");
+      //   existingUser = newUser;
+      // }
+
+      let token = await Wjt.findOne({
+        where: { clientId: existingUser.id },
+      });
+
+      if (!token) {
+        await Wjt.create({ clientId: existingUser.id });
+        token = await Wjt.findOne({
+          where: { clientId: existingUser.id },
+        });
+      }
+
+      res.redirect(`/client/user/${existingUser.googleId}/${token.wtjId}`);
+    } catch (err) {
+      console.error("Erro no callback do Google: ", err);
+      res.status(500).send("Erro na autenticação com o google 🤒");
+    }
   }
 }
