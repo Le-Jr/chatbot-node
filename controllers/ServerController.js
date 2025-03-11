@@ -118,8 +118,8 @@ export class ServerController {
   static async googleCallback(req, res, next) {
     try {
       const user = req.user;
-      // console.log("usuário: ", user);
       const googleId = user.googleId;
+      console.log("Google ID: ", googleId);
 
       let existingUser = await Clients.findOne({
         where: { googleId: googleId },
@@ -149,7 +149,7 @@ export class ServerController {
         });
       }
 
-      res.redirect(`/client/user/${existingUser.googleId}/${token.wtjId}`);
+      res.redirect(`/client/user/${existingUser.id}/${token.wtjId}`);
     } catch (err) {
       console.error("Erro no callback do Google: ", err);
       res.status(500).send("Erro na autenticação com o google 🤒");
