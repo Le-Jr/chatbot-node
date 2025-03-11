@@ -2,6 +2,7 @@ import express from "express";
 export const router = express.Router();
 import { ServerController } from "../controllers/ServerController.js";
 import { clientController } from "../controllers/clientController.js";
+import passport from "passport";
 
 router.get("/register", ServerController.registerPage);
 router.post("/register", ServerController.createUser);
@@ -16,8 +17,13 @@ router.get("/session", (req, res) => {
 
 // Rotas Google OAuth
 router.get("/auth/google", ServerController.googleAuth);
-router.get("/auth/google/callback", ServerController.googleCallback);
-router.get("/sucesso", ServerController.googleSucess);
+router.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/login",
+  }),
+  ServerController.googleCallback
+);
 
 // Rotas Autenticação
 router.get("/user/:id/:wtj", ServerController.loggedClient);
