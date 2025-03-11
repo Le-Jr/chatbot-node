@@ -2,57 +2,92 @@ import { create } from "@wppconnect-team/wppconnect";
 import { generateAnswer } from "../utils/openai_config.js";
 import { Clients } from "../models/Clients.js";
 import { PreviousContacts } from "../models/PreviousContacts.js";
-import { Wjt } from "../models/Wtj.js"
+import { Wjt } from "../models/Wtj.js";
 
 export class clientController {
   static async startClientSession(req, res) {
-
-
-    const auth = await Wjt.findOne({
-      where: {
-        clientId: req.body.id,
-        wtjId: req.body.token
-      }
-    })
-
-    console.log("aqui tem que passar")
-
-    if (auth) {
-      const currentUser = await Clients.findOne({
+    try {
+      const auth = await Wjt.findOne({
         where: {
-          id: req.body.id,
-        }
-      })
-      console.log(currentUser.id)
-      await create({
-        session: String(currentUser.name),
-        puppeteerOptions: {
-          headless: true,
-          args: [
-            "--no-sandbox",
-            `--user-data-dir=./tokens/${currentUser.id}/chrome-profile`,
-          ],
-          session: {
-            autoClose: 0,
-          },
+          clientId: req.body.id,
+          wtjId: req.body.token,
         },
-        catchQR: async (base64Qr, attempts) => {
-          currentUser.qrCode=base64Qr
-          res.json(currentUser)
-        }
-      }).then((client) => {
-        console.log("aqui é o then")
-        client.onMessage(async (message) => {
-          const phoneNumber = message.from.slice(0, 13);
-          this.sendMessage(
-            message,
-            client,
-            currentUser,
-            phoneNumber
-          );
-        });
       });
 
+      console.log("aqui tem que passar");
+
+      if (auth) {
+        const currentUser = await Clients.findOne({
+          where: {
+            id: req.body.id,
+          },
+        });
+        console.log(currentUser.id);
+        await create({
+          // session: String(currentUser.name),
+          session: `whatsapp_bot_${currentUser.id}`,
+          puppeteerOptions: {
+            headless: true,
+            args: [
+              "--no-sandbox",
+              `--user-data-dir=./tokens/${currentUser.id}/chrome-profile`,
+            ],
+            session: {
+              autoClose: 0,
+            },
+          },
+          catchQR: async (base64Qr, attempts) => {
+            currentUser.qrCode = base64Qr;
+            res.json({ qrCode: base64Qr });
+            // res.json(currentUser);
+          },
+        })
+          .then((client) => {
+            if (!client) {
+              console.error("Cliente não foi criado de forma apropriada 🤒");
+              return;
+            }
+
+            console.log("✅ Cliente criado adquadamente: ", client);
+
+            // console.log("aqui é o then");
+            client.onMessage(async (message) => {
+              if (!client.connected || typeof client.sendText !== "function") {
+                console.error(
+                  "Client is not initalized properly or sendText is undefined"
+                );
+                return;
+              }
+
+              const phoneNumber = message.from.replace(/\D/g, "").slice(0, 13);
+              // const phoneNumber = message.from.slice(0, 13);
+
+              try {
+                await clientController.sendMessage(
+                  message,
+                  client,
+                  currentUser,
+                  phoneNumber
+                );
+              } catch (err) {
+                console.error("Error handling message: ", err);
+                client.sendText(
+                  message.from,
+                  "⚠️ Ocorreu um erro ao processar sua mensagem"
+                );
+              }
+            });
+          })
+          .catch((error) => {
+            console.error("Error creating client:", error);
+            res
+              .status(500)
+              .json({ error: "Failed to initialize WhatsApp client" });
+          });
+      }
+    } catch (err) {
+      console.error("Unexpected error:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   }
 
@@ -71,7 +106,7 @@ export class clientController {
     return false;
   }
 
-  static async getContextMessage(client, phoneNumber) { }
+  static async getContextMessage(client, phoneNumber) {}
 
   static async sendMessage(message, client, clientInfos, phoneNumber) {
     if (phoneNumber != "status@broadc" && !message.isGroupMsg) {
@@ -87,7 +122,7 @@ export class clientController {
           {
             phoneNumber: phoneNumber,
             clientId: clientInfos.id,
-            context: `${isPreviousContact.config}\n ${phoneNumber}:${message.body}\n chatgpt:${gptMessage}\n`,
+            context: `${isPreviousContact.context}\n ${phoneNumber}:${message.body}\n chatgpt:${gptMessage}\n`,
           },
           {
             where: {
