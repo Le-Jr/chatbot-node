@@ -2,28 +2,26 @@ import { create } from "@wppconnect-team/wppconnect";
 import { generateAnswer } from "../utils/openai_config.js";
 import { Clients } from "../models/Clients.js";
 import { PreviousContacts } from "../models/PreviousContacts.js";
-import { Wjt } from "../models/Wtj.js"
+import { Wjt } from "../models/Wtj.js";
 
 export class clientController {
   static async startClientSession(req, res) {
-
-
     const auth = await Wjt.findOne({
       where: {
         clientId: req.body.id,
-        wtjId: req.body.token
-      }
-    })
+        wtjId: req.body.token,
+      },
+    });
 
-    console.log("aqui tem que passar")
+    console.log("aqui tem que passar");
 
     if (auth) {
       const currentUser = await Clients.findOne({
         where: {
           id: req.body.id,
-        }
-      })
-      console.log(currentUser.id)
+        },
+      });
+      console.log(currentUser.id);
       await create({
         session: String(currentUser.name),
         puppeteerOptions: {
@@ -37,22 +35,16 @@ export class clientController {
           },
         },
         catchQR: async (base64Qr, attempts) => {
-          currentUser.qrCode=base64Qr
-          res.json(currentUser)
-        }
+          currentUser.qrCode = base64Qr;
+          res.json(currentUser);
+        },
       }).then((client) => {
-        console.log("aqui é o then")
+        console.log("aqui é o then");
         client.onMessage(async (message) => {
           const phoneNumber = message.from.slice(0, 13);
-          this.sendMessage(
-            message,
-            client,
-            currentUser,
-            phoneNumber
-          );
+          this.sendMessage(message, client, currentUser, phoneNumber);
         });
       });
-
     }
   }
 
@@ -71,7 +63,7 @@ export class clientController {
     return false;
   }
 
-  static async getContextMessage(client, phoneNumber) { }
+  static async getContextMessage(client, phoneNumber) {}
 
   static async sendMessage(message, client, clientInfos, phoneNumber) {
     if (phoneNumber != "status@broadc" && !message.isGroupMsg) {
