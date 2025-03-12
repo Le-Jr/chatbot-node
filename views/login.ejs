@@ -18,8 +18,8 @@
       <p>Faça login agora</p>
 
       <div class="form-input-group">
-        <label for="email">Email:</label>
         <div>
+        <label for="email">Email:</label>
           <input
             class="form-input"
             name="email"
@@ -45,8 +45,8 @@
       </div>
 
       <div class="form-input-group">
-        <label for="password">Senha:</label>
         <div>
+        <label for="password">Senha:</label>
           <input
             class="form-input"
             type="password"
@@ -76,7 +76,7 @@
 
       <div class="span-form">
         <span><% if (error) { %>
-            email ou senha inválido
+            <p style="color: var(--error-color);">email ou senha inválidos</p>
         <% } %></span>
       </div>
 
