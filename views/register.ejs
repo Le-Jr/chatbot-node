@@ -9,99 +9,119 @@
     <link rel="stylesheet" href="/stylesheets/google.css" />
   </head>
   <body>
-    <form action="/client/register" method="post" class="form">
+    <form action="/client/register" method="post" class="form" id="form">
       <img src="/assets/neuralWeb.svg" alt="" class="logo-company" />
       <p>Crie agora sua conta</p>
-      <div class="form-input">
+      <div class="form-input-group">
         <label for="name">Nome:</label>
-        <input
-          type="text"
-          name="name"
-          id="name"
-          placeholder="Digite o nome da empresa"
-          required
-        />
-        <svg
-          class="icon"
-          xmlns="http://www.w3.org/2000/svg"
-          height="24px"
-          viewBox="0 -960 960 960"
-          width="24px"
-          fill="#F4F4F4"
-        >
+        <div>
+          <input
+            class="form-input"
+            type="text"
+            name="name"
+            id="name"
+            placeholder="Digite o nome da empresa"
+          />
+          <svg
+            class="icon"
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#F4F4F4"
+          >
           <path
             d="M200-200v-200h240v200-200H200v200Zm480-360ZM40-120v-400l280-200 280 200-28.5 28.5L543-463 320-622 120-480v280h80v-200h240v280h-80v-200h-80v200H40Zm880-720v405q-17-18-37-32.5T840-493v-267H480v56l-80-58v-78h520ZM680-600h80v-80h-80v80Zm40 560q-83 0-141.5-58.5T520-240q0-83 58.5-141.5T720-440q83 0 141.5 58.5T920-240q0 83-58.5 141.5T720-40Zm-20-80h40v-100h100v-40H740v-100h-40v100H600v40h100v100Z"
           />
-        </svg>
+          </svg>
+        </div>
+        <div class="span-form">
+          <span class="span-required">Este campo é obrigatório</span>
+        </div>
       </div>
 
-      <div class="form-input">
+      <div class="form-input-group">
         <label for="email">Email:</label>
-        <input
-          type="email"
-          name="email"
-          id="email"
-          placeholder="Digite aqui o email da empresa"
-          required
-        />
-        <svg
-          class="icon"
-          xmlns="http://www.w3.org/2000/svg"
-          height="24px"
-          viewBox="0 -960 960 960"
-          width="24px"
-          fill="#F4F4F4"
-        >
-          <path
-            d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z"
+        <div>
+          <input
+            class="form-input"
+            type="email"
+            name="email"
+            id="email"
+            placeholder="Digite aqui o email da empresa"
           />
-        </svg>
+          <svg
+            class="icon"
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#F4F4F4"
+          >
+            <path
+              d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z"
+            />
+          </svg>
+        </div>
+        <div class="span-form">
+          <span class="span-required">Insira um email válido</span>
+        </div>
       </div>
 
-      <div class="form-input">
+      <div class="form-input-group">
         <label for="password">Crie uma senha:</label>
-        <input
-          type="password"
-          name="password"
-          id="password"
-          placeholder="Digite sua senha"
-          required
-        />
-        <svg
-          class="icon"
-          xmlns="http://www.w3.org/2000/svg"
-          height="24px"
-          viewBox="0 -960 960 960"
-          width="24px"
-          fill="#F4F4F4"
-        >
+        <div>
+          <input
+            class="form-input"
+            type="password"
+            name="password"
+            id="password"
+            placeholder="Digite sua senha"
+          />
+          <svg
+            class="icon"
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#F4F4F4"
+          >
           <path
             d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm0-80h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM240-160v-400 400Z"
           />
-        </svg>
+          </svg>
+        </div>
+        <div class="span-form">
+          <span class="span-required">Este campo é obrigatório</span>
+        </div>
       </div>
 
-      <div class="form-input">
-        <label for="password">Confirme sua senha:</label>
-        <input
-          type="password"
-          name="teste"
-          id="password"
-          placeholder="Digite sua senha novamente"
-          required
-        />
-        <svg
-          class="icon"
-          xmlns="http://www.w3.org/2000/svg"
-          height="24px"
-          viewBox="0 -960 960 960"
-          width="24px"
-          fill="#F4F4F4"
-        >
-          <path
-            d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm0-80h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM240-160v-400 400Z"
+      <div class="form-input-group">
+        <label for="passwordCorfirm">Confirme sua senha:</label>
+        <div>
+          <input
+            class="form-input"
+            type="password"
+            name="teste"
+            id="password"
+            placeholder="Digite sua senha novamente"
           />
-        </svg>
+          <svg
+            class="icon"
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#F4F4F4"
+          >
+            <path
+              d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm0-80h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM240-160v-400 400Z"
+            />
+          </svg>
+        </div>
+        <div class="span-form">
+          <span class="span-required">Este campo é obrigatório</span>
+        </div>
       </div>
 
       <input type="submit" value="Cadastrar" />
@@ -120,12 +140,6 @@
         <span class="form-line"></span>
       </div>
 
-      <!-- <svg class="google-button" xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="-3 0 262 262" preserveAspectRatio="xMidYMid">
-        <path d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622 38.755 30.023 2.685.268c24.659-22.774 38.875-56.282 38.875-96.027" fill="#4285F4"/>
-        <path d="M130.55 261.1c35.248 0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055-34.523 0-63.824-22.773-74.269-54.25l-1.531.13-40.298 31.187-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1" fill="#34A853"/>
-        <path d="M56.281 156.37c-2.756-8.123-4.351-16.827-4.351-25.82 0-8.994 1.595-17.697 4.206-25.82l-.073-1.73L15.26 71.312l-1.335.635C5.077 89.644 0 109.517 0 130.55s5.077 40.905 13.925 58.602l42.356-32.782" fill="#FBBC05"/>
-        <path d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0 79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251" fill="#EB4335"/>
-      </svg> -->
       <a href="/client/auth/google">
         <button class="gsi-material-button" type="button">
           <div class="gsi-material-button-state"></div>
@@ -138,28 +152,30 @@
                 xmlns:xlink="http://www.w3.org/1999/xlink"
                 style="display: block"
               >
-                <path
-                  fill="#EA4335"
-                  d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
-                ></path>
-                <path
-                  fill="#4285F4"
-                  d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
-                ></path>
-                <path
-                  fill="#FBBC05"
-                  d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
-                ></path>
-                <path
-                  fill="#34A853"
-                  d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
-                ></path>
-                <path fill="none" d="M0 0h48v48H0z"></path>
+              <path
+                fill="#EA4335"
+                d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+              >
+              </path>
+              <path
+                fill="#4285F4"
+                d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+              >
+              </path>
+              <path
+                fill="#FBBC05"
+                d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+              >
+              </path>
+              <path
+                fill="#34A853"
+                d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+              >
+              </path>
+              <path fill="none" d="M0 0h48v48H0z"></path>
               </svg>
             </div>
-            <span class="gsi-material-button-contents"
-              >Faça registro com o Google</span
-            >
+            <span class="gsi-material-button-contents">Faça registro com o Google</span>
             <span style="display: none">Faça registro com o Google</span>
           </div>
         </button>
@@ -172,4 +188,5 @@
       </div>
     </div>
   </body>
+  <script src="/scripts/formAutentication.js"></script>
 </html>
