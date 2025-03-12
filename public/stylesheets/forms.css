@@ -1,16 +1,17 @@
 body {
   display: flex;
+  align-items: center;
 }
 p {
   font-weight: var(--font-bold);
 }
 form {
+  display: flex;
   flex-direction: column;
-  height: 125vh;
   width: 35%;
   background-color: var(--primary-color);
-  justify-items: center;
   align-items: center;
+  padding: 1.5rem;
 }
 input {
   background-color: var(--body-color);
@@ -46,13 +47,12 @@ input[type="submit"]:hover {
 }
 .logo-company {
   height: 15vh;
-  margin-top: 4.5vh;
 }
 .form-input-group {
-  margin: 2.5vh 7.5vh 2.5vh 0;
+  margin: 0 7.5vh 0 0;
   display: flex;
   flex-direction: column; 
-  gap: 8px;
+  gap: 1rem;
 }
 .icon {
   position: absolute;
@@ -105,15 +105,12 @@ input[type="submit"]:hover {
   cursor: pointer;
 }
 .logo-main {
+  display: flex;
   width: 65%;
-  display: block;
-  justify-items: center;
+  justify-content: center;
 }
 #logo-mercurio {
   height: 65vh;
-}
-#logo-mercurio {
-  margin: 15vh;
 }
 .loading {
   display: none; /* Inicialmente oculto */
@@ -137,4 +134,15 @@ input[type="submit"]:hover {
 .span-required{
   color: var(--error-color);
   display: none;
+}
+
+ @media screen and (max-width: 1250px) {
+
+  #logo-mercurio{
+    height: 45vh;
+    width: 45vh;
+  }
+
+
+  
 }
