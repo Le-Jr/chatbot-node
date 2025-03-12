@@ -16,9 +16,7 @@ export class ServerController {
   }
 
   static async createUser(req, res) {
-    // console.log("Nome: ", req.body.name);
-    // console.log("Email: ", req.body.email);
-    // console.log("Senha: ", req.body.password);
+ 
     const password = await bcrypt.hash(req.body.password, 10);
     const user = {
       name: req.body.name,
@@ -27,12 +25,15 @@ export class ServerController {
     };
 
     await Clients.create(user);
+    const newClient = await Clients.findOne({ raw: true, where: { email: user.email } })
+    const newWtj = await Wjt.create({ clientId: newClient.id })
 
-    res.redirect("/");
+
+
+    res.redirect(`/client/user/${newClient.id}/${newWtj.wtjId}`);
   }
 
   static async readUser(req, res) {
-    console.log(req.params);
     const id = req.params.id;
     const client = await Clients.findOne({ where: { id: id }, raw: true });
 
@@ -119,7 +120,6 @@ export class ServerController {
     try {
       const user = req.user;
       const googleId = user.googleId;
-      console.log("Google ID: ", googleId);
 
       let existingUser = await Clients.findOne({
         where: { googleId: googleId },
