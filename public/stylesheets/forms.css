@@ -5,10 +5,12 @@ p {
   font-weight: var(--font-bold);
 }
 form {
-  height: 120vh;
+  flex-direction: column;
+  height: 125vh;
   width: 35%;
   background-color: var(--primary-color);
   justify-items: center;
+  align-items: center;
 }
 input {
   background-color: var(--body-color);
@@ -27,6 +29,11 @@ input[type="submit"] {
   color: var(--primary-color);
   cursor: pointer;
   width: 57.5vh;
+  display: block;
+  text-align: center;
+  justify-items: center;
+  padding: 15px;
+  margin: 2vh;
 }
 input[type="submit"]:hover {
   background-color: var(--primary-color);
@@ -39,12 +46,15 @@ input[type="submit"]:hover {
 }
 .logo-company {
   height: 15vh;
-  margin-top: 5vh;
+  margin-top: 4.5vh;
 }
-.form-input {
+.form-input-group {
   margin: 2.5vh 7.5vh 2.5vh 0;
+  display: flex;
+  flex-direction: column; 
+  gap: 8px;
 }
-.form-input .icon {
+.icon {
   position: absolute;
   width: 7vh;
   height: 7vh;
@@ -66,7 +76,7 @@ input[type="submit"]:hover {
 }
 #form-line-group-text {
   font-weight: var(--font-normal);
-  margin: 0.5vh;
+  margin: 0.4vh;
   color: #c2c2c2;
 }
 .form-button {
@@ -118,7 +128,13 @@ input[type="submit"]:hover {
   justify-content: center;
   align-items: center;
 }
-
 .active {
   display: flex; /* Exibe quando a classe "active" é adicionada */
+}
+.span-form{
+ flex-basis: 100%;
+}
+.span-required{
+  color: var(--error-color);
+  display: none;
 }

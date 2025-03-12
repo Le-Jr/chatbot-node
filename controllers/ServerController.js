@@ -55,7 +55,7 @@ export class ServerController {
     res.render("readClients", { client });
   }
   static async loginView(req, res) {
-    res.render("login");
+    res.render("login", { error: false });
   }
   static async loginUser(req, res) {
     const user = {
@@ -85,7 +85,7 @@ export class ServerController {
           res.redirect(`user/${currentUser.id}/${token.wtjId}`);
         }
       } else {
-        res.status(404).send("Usuário não encontrado");
+        res.render("login", { error: true });
       }
     });
 
