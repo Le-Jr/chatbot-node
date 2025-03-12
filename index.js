@@ -9,6 +9,7 @@ import { render } from "ejs";
 import passport from "./config/googleAuth.js";
 import session from "express-session";
 import { Clients } from "./models/Clients.js";
+import { PreviousContacts } from "./models/PreviousContacts.js";
 
 const port = 3000;
 const __dirname = dirname(fileURLToPath(import.meta.url));
