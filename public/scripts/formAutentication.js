@@ -13,6 +13,7 @@ form.addEventListener("submit", (event) => {
       form.submit();
     }
   } else {
+    console.log("entrei no else certo");
     emailValidate();
     passwordValidate();
     passwordComparation();
@@ -23,8 +24,8 @@ form.addEventListener("submit", (event) => {
       passwordValidate() &&
       nameValidate()
     ) {
+      console.log("entrei no if certo");
       form.submit();
-      form.reset();
     }
   }
 });
@@ -84,13 +85,18 @@ function passwordValidate() {
     setError(2);
   } else {
     removeError(2);
+    return true;
   }
 }
 
 function passwordComparation() {
-  if (campos[2].value !== campos[3].value || campos[3].value.length < 8) {
+  if (campos[2].value !== campos[3].value) {
+    spans[3].innerHTML = "As senhas não são iguais";
+    setError(3);
+  } else if (campos[3].value.length < 8) {
     setError(3);
   } else {
     removeError(3);
+    return true;
   }
 }

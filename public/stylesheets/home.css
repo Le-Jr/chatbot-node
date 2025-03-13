@@ -1,0 +1,35 @@
+nav{
+    background-color: var(--title-color);
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--text-color);
+}
+nav ul{
+    list-style: none;
+    display: flex;
+    align-items: center;
+    padding: .5rem;
+}
+nav li{
+    display: flex;
+}
+nav .logo-nav{
+    margin-right: auto;
+}
+nav a{
+    color: var(--primary-color);
+    text-decoration: none;
+    display: flex;
+    padding: 1em 2em;
+    transition: background-color 350ms ease;
+}
+nav a:hover{
+    background-color: var(--primary-color);
+    color: var(--title-color);
+}
+nav a.logout-link{
+    background-color: var(--error-color);
+}
+nav a.logout-link:hover{
+    background-color: var(--primary-color);
+    color: var(--error-color);
+}
