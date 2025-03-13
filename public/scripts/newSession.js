@@ -1,4 +1,6 @@
 const buttonForNewSession = document.querySelector(".newSessionButton");
+const qrCode = document.querySelector('.qrCodeDiv')
+
 
 
 
@@ -18,7 +20,8 @@ buttonForNewSession.addEventListener("click", () => {
       return response.json();
     })
     .then((data) => {
-      console.log("Resposta do servidor:", data);
+      console.log(data.qrCode)
+      qrCode.innerHTML=`<img src="${data.qrCode}">`
     })
     .catch((error) => {
       console.error("Erro ao fazer a requisição:", error);
