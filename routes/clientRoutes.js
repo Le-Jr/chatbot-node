@@ -11,6 +11,11 @@ router.post("/read/:id", ServerController.updateUser);
 router.get("/login", ServerController.loginView);
 router.post("/login", ServerController.loginUser);
 
+router.post('/promptUpdate/:id',ServerController.updatePromptUser)
+router.post('/faqUpdate/:id',ServerController.updateFaqUser)
+
+
+
 router.get("/session", (req, res) => {
   res.json(req.user || { message: "Nenhum usuário logado!" });
 });

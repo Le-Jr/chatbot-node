@@ -55,6 +55,26 @@ export class ServerController {
     client = await Clients.findOne({ where: { id: id }, raw: true });
     res.render("readClients", { client });
   }
+  static async updatePromptUser(req,res){
+    const user = req.body
+    try{
+      await Clients.update({config:user.prompt},{where:{id:user.id}})
+      res.json(true)
+    }
+    catch {
+      res.json(false)
+    }
+  }
+  static async updateFaqUser(req,res){
+    const user = req.body
+    try{
+      await Clients.update({faq:user.faq},{where:{id:user.id}})
+      res.json(true)
+    }
+    catch {
+      res.json(false)
+    }
+  }
   static async loginView(req, res) {
     res.render("login", { error: false });
   }

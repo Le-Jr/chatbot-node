@@ -1,5 +1,7 @@
 const buttonForNewSession = document.querySelector(".newSessionButton");
 
+
+
 buttonForNewSession.addEventListener("click", () => {
   console.log("clickei no teu botão 🌚");
   fetch(`/client/user/${user.id}/${user.token}/createSession`, {
