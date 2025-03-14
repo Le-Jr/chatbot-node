@@ -16,7 +16,6 @@ export class ServerController {
   }
 
   static async createUser(req, res) {
- 
     const password = await bcrypt.hash(req.body.password, 10);
     const user = {
       name: req.body.name,
@@ -25,10 +24,11 @@ export class ServerController {
     };
 
     await Clients.create(user);
-    const newClient = await Clients.findOne({ raw: true, where: { email: user.email } })
-    const newWtj = await Wjt.create({ clientId: newClient.id })
-
-
+    const newClient = await Clients.findOne({
+      raw: true,
+      where: { email: user.email },
+    });
+    const newWtj = await Wjt.create({ clientId: newClient.id });
 
     res.redirect(`/client/user/${newClient.id}/${newWtj.wtjId}`);
   }
@@ -55,24 +55,22 @@ export class ServerController {
     client = await Clients.findOne({ where: { id: id }, raw: true });
     res.render("readClients", { client });
   }
-  static async updatePromptUser(req,res){
-    const user = req.body
-    try{
-      await Clients.update({config:user.prompt},{where:{id:user.id}})
-      res.json(true)
-    }
-    catch {
-      res.json(false)
+  static async updatePromptUser(req, res) {
+    const user = req.body;
+    try {
+      await Clients.update({ config: user.prompt }, { where: { id: user.id } });
+      res.json(true);
+    } catch {
+      res.json(false);
     }
   }
-  static async updateFaqUser(req,res){
-    const user = req.body
-    try{
-      await Clients.update({faq:user.faq},{where:{id:user.id}})
-      res.json(true)
-    }
-    catch {
-      res.json(false)
+  static async updateFaqUser(req, res) {
+    const user = req.body;
+    try {
+      await Clients.update({ faq: user.faq }, { where: { id: user.id } });
+      res.json(true);
+    } catch {
+      res.json(false);
     }
   }
   static async loginView(req, res) {
@@ -145,19 +143,6 @@ export class ServerController {
         where: { googleId: googleId },
       });
 
-      // if (!existingUser) {
-      //   // Se o usuário não existir, cria um novo
-      //   const [newUser] = await Clients.findOrCreate({
-      //     where: { googleId: user.id },
-      //     defaults: {
-      //       name: user.displayName, // Nome do Google
-      //       email: user.email || "", // Email do Google
-      //     },
-      //   });
-
-      //   existingUser = newUser;
-      // }
-
       let token = await Wjt.findOne({
         where: { clientId: existingUser.id },
       });
@@ -169,7 +154,7 @@ export class ServerController {
         });
       }
 
-      res.redirect(`/client/user/${existingUser.id}/${token.wtjId}`);
+      res.redirect(`/user/${existingUser.id}/${token.wtjId}`);
     } catch (err) {
       console.error("Erro no callback do Google: ", err);
       res.status(500).send("Erro na autenticação com o google 🤒");
