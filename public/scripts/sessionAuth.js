@@ -28,16 +28,16 @@ fetch(`/user/${user.id}/${user.token}`, {
     if (!response.ok) {
       throw new Error("Erro na requisição");
     }
-    return currentUser = response.json();
+    return (currentUser = response.json());
   })
   .then((data) => {
     console.log("Resposta do servidor:", data);
     const currentUser = data.currentUser;
     if (currentUser.config != undefined) {
-      promptInput.value = data.currentUser.config
+      promptInput.value = data.currentUser.config;
     }
     if (currentUser.faq != undefined) {
-      faqInput.value = data.currentUser.faq
+      faqInput.value = data.currentUser.faq;
     }
   })
   .catch((error) => {
@@ -61,8 +61,32 @@ updatePromptButton.addEventListener("click", () => {
       }
       return currentUser = response.json();
     })
-    .then((data) => {
-      console.log(data)
+      .then((response) => {
+        closeModal();
+        if (!response.ok) {
+          throw new Error("Erro na requisição");
+        }
+        return (currentUser = response.json());
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Erro ao fazer a requisição:", error);
+      });
+  }
+  //});
+  else if (actionType == "FAQ") {
+    // Faq update
+    //updateFaqButton.addEventListener("click", () => {
+    faqInput = document.querySelector(".faqInput");
+    user.faq = faqInput.value;
+    fetch(`/client/faqUpdate/${user.id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
     })
     .catch((error) => {
       console.error("Erro ao fazer a requisição:", error);
