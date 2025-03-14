@@ -6,7 +6,7 @@ const qrCode = document.querySelector('.qrCodeDiv')
 
 buttonForNewSession.addEventListener("click", () => {
   console.log("clickei no teu botão 🌚");
-  fetch(`/client/user/${user.id}/${user.token}/createSession`, {
+  fetch(`/user/${user.id}/${user.token}/createSession`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

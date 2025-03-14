@@ -33,10 +33,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/client", router);
-app.get("/", (req, res) => {
-  res.render("home");
-});
+app.use("/", router);
+
 
 console.log("📌 Estratégias registradas no Passport:", passport._strategies);
 

@@ -48,7 +48,7 @@ updatePromptButton.addEventListener("click", () => {
 
   promptInput = document.querySelector(".promptInput");
   user.prompt = promptInput.value
-  fetch(`/client/promptUpdate/${user.id}`, {
+  fetch(`/promptUpdate/${user.id}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -73,7 +73,7 @@ updateFaqButton.addEventListener("click", () => {
 
   faqInput = document.querySelector(".faqInput");
   user.faq = faqInput.value
-  fetch(`/client/faqUpdate/${user.id}`, {
+  fetch(`/faqUpdate/${user.id}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

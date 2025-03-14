@@ -8,6 +8,7 @@ router.get("/register", ServerController.registerPage);
 router.post("/register", ServerController.createUser);
 router.get("/read/:id", ServerController.readUser);
 router.post("/read/:id", ServerController.updateUser);
+router.get("/", ServerController.loginView);
 router.get("/login", ServerController.loginView);
 router.post("/login", ServerController.loginUser);
 
