@@ -4,21 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>bem vindo</title>
+    <link rel="stylesheet" href="/stylesheets/app.css">
+    <link rel="stylesheet" href="/stylesheets/home.css">
   </head>
   <body>
-    <div id="client">
-      <h1>Página Cliente</h1>
-      <button class="newSessionButton">Criar nova seção</button>
-      <br>
-      <br>
-      <br>
-      <br>
-      <input type="text" class="promptInput" placeholder="Digite aqui o prompt da sua assistente">
-      <p class="updatePromptButton">alterar prompt</p>
-      <input type="text" class="faqInput" placeholder="Digite aqui o faq da sua assistente">
-      <div class="qrCodeDiv"></div>
-      <p class="updateFaqButton">alterar faq</p>
-    </div>
+    <nav>
+      <ul>
+        <li class="logo-nav"><img src="/assets/mercurioNavbar.svg" alt=""></li>
+        <li><a href="">Configuração</a></li>
+        <li><a class="logout-link" href="">Sair</a></li>
+      </ul>
+    </nav>
+    <main>
+      <div id="client">
+        <button class="newSessionButton">Criar nova seção</button>
+        <input type="text" class="promptInput" placeholder="Digite aqui o prompt da sua assistente">
+        <button class="updatePromptButton">Alterar prompt</button>
+        <input type="text" class="faqInput" placeholder="Digite aqui o faq da sua assistente">
+        <div class="qrCodeDiv"></div>
+        <button class="updateFaqButton">Alterar faq</button>
+      </div>
+    </main>
   </body>
   <script src="/scripts/sessionAuth.js"></script>
   <script src="/scripts/newSession.js"></script>
