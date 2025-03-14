@@ -1,8 +1,8 @@
 const path = window.location.pathname;
 const pathLocate = path.split("/");
 const user = {
-  id: pathLocate[3],
-  token: pathLocate[4],
+  id: pathLocate[2],
+  token: pathLocate[3],
 };
 
 let promptInput = document.querySelector(".promptInput");
@@ -17,7 +17,7 @@ localStorage.setItem("user", JSON.stringify(user));
 
 console.log("charlie brow");
 
-fetch(`/client/user/${user.id}/${user.token}`, {
+fetch(`/user/${user.id}/${user.token}`, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
