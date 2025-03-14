@@ -42,41 +42,13 @@ export async function generateAnswer(message, sendMessageCallback) {
 
   for (let i = 0; i < responseChunks.length; i++) {
     const chunk = responseChunks[i];
-    await new Promise(
-      (resolve) =>
-        setTimeout(() => {
-          sendMessageCallback(chunk); // Envia a parte da mensagem usando o callback
-          resolve(); // Resolve a promise após o envio
-        }, Math.random() * 1000 + 500) // Atraso entre 500ms e 1.5s
+    await new Promise((resolve) =>
+      setTimeout(() => {
+        sendMessageCallback(chunk); // Envia a parte da mensagem usando o callback
+        resolve(); // Resolve a promise após o envio
+      })
     );
   }
 
   return responseChunks;
 }
-
-// import OpenAI from "openai";
-// import "dotenv/config";
-
-// const key = process.env["OPEN_AI_KEY"];
-
-// const openai = new OpenAI({
-//   project: "proj_Q6YIIPWgtYS8O3W9x5Xvxblz",
-//   organization: "org-rKAJGiGYPIYjgz6o441DkC7V",
-//   apiKey: key,
-// });
-
-// export async function generateAnswer(message) {
-//   const prompt = `
-// ${message}
-// `;
-//   const completion = await openai.chat.completions.create({
-//     model: "gpt-4o",
-//     max_completion_tokens: 200,
-//     store: true,
-//     //   stream: true,
-//     messages: [{ role: "user", content: prompt }],
-//     temperature: 0.5,
-//   });
-
-//   return completion.choices[0].message.content;
-// }
