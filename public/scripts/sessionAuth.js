@@ -1,8 +1,8 @@
 const path = window.location.pathname;
 const pathLocate = path.split("/");
 const user = {
-  id: pathLocate[3],
-  token: pathLocate[4],
+  id: pathLocate[2],
+  token: pathLocate[3],
 };
 
 let promptInput = document.querySelector(".promptInput");
@@ -17,7 +17,7 @@ localStorage.setItem("user", JSON.stringify(user));
 
 console.log("charlie brow");
 
-fetch(`/client/user/${user.id}/${user.token}`, {
+fetch(`/user/${user.id}/${user.token}`, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -43,18 +43,23 @@ fetch(`/client/user/${user.id}/${user.token}`, {
   .catch((error) => {
     console.error("Erro ao fazer a requisição:", error);
   });
-function confirmAction() {
-  // Prompt update
-  if (actionType == "Prompt") {
-    //updatePromptButton.addEventListener("click", () => {
-    promptInput = document.querySelector(".promptInput");
-    user.prompt = promptInput.value;
-    fetch(`/client/promptUpdate/${user.id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
+
+updatePromptButton.addEventListener("click", () => {
+
+  promptInput = document.querySelector(".promptInput");
+  user.prompt = promptInput.value
+  fetch(`/promptUpdate/${user.id}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(user),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Erro na requisição");
+      }
+      return currentUser = response.json();
     })
       .then((response) => {
         closeModal();
@@ -83,19 +88,33 @@ function confirmAction() {
       },
       body: JSON.stringify(user),
     })
-      .then((response) => {
-        closeModal();
-        if (!response.ok) {
-          throw new Error("Erro na requisição");
-        }
-        return (currentUser = response.json());
-      })
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error("Erro ao fazer a requisição:", error);
-      });
-    //});
-  }
-}
+    .catch((error) => {
+      console.error("Erro ao fazer a requisição:", error);
+    });
+})
+
+updateFaqButton.addEventListener("click", () => {
+
+  faqInput = document.querySelector(".faqInput");
+  user.faq = faqInput.value
+  fetch(`/faqUpdate/${user.id}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(user),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Erro na requisição");
+      }
+      return currentUser = response.json();
+    })
+    .then((data) => {
+      console.log(data)
+    })
+    .catch((error) => {
+      console.error("Erro ao fazer a requisição:", error);
+    });
+})
+
