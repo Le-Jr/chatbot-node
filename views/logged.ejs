@@ -25,6 +25,8 @@
         </button>
         <div class="textAreaPrompts">
           <div class="inputContainer">
+            <h3>Editar Prompt</h3>
+            <p>Insira um comando bem detalhado com instruções que você quer que sua atendente IA execute, é muito importante que você seja o mais claro possível nessas instruções</p>
             <textarea type="text" class="promptInput" placeholder="Digite aqui o prompt da sua assistente"></textarea>
             <button class="updatePromptButton" onclick="openModal('Prompt')">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
@@ -34,6 +36,7 @@
             </button>
           </div>
           <div class="inputContainer">
+            <h3>Editar FAQ</h3>
             <textarea type="text" class="faqInput" placeholder="Digite aqui o faq da sua assistente"></textarea>
             <button class="updateFaqButton" onclick="openModal('FAQ')">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
@@ -61,6 +64,9 @@
           <span class="points"></span>
           <span class="points"></span>
           <span class="points"></span>
+        </div>
+        <div class="progress-container">
+          <div class="progress-bar"></div>
         </div>
         <div class="qrCodeDiv"></div>
         <div class="modal-buttons">

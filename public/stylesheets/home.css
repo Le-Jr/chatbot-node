@@ -195,3 +195,28 @@ textarea {
     font-weight: var(--font-bold);
     font-size: var(--h3-font-size);
   }
+  .progress-container {
+    width: 100%;
+    height: 20px;
+    background-color: #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+    display: none; /* Inicialmente escondido */
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: var(--title-color);
+    animation: progress 60s linear forwards, hide 0.5s linear 60s forwards;
+}
+
+@keyframes progress {
+    from { width: 0%; }
+    to { width: 100%; }
+}
+
+@keyframes hide {
+    to { opacity: 0; }
+}
