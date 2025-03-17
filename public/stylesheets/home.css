@@ -22,9 +22,11 @@ nav a{
     padding: 1em 2em;
     transition: background-color 350ms ease;
 }
-nav a:hover{
-    background-color: var(--primary-color);
-    color: var(--title-color);
+nav a:hover svg .settings-icon{
+    fill: var(--primary-color);
+}
+nav a:hover svg .settings-bg{
+    fill: var(--title-color);
 }
 nav a.logout-link{
     background-color: var(--error-color);
@@ -33,13 +35,25 @@ nav a.logout-link:hover{
     background-color: var(--primary-color);
     color: var(--error-color);
 }
+.nav-link{
+    width: 7rem;
+    height: 7rem;
+}
+.settings-icon{
+    fill: var(--title-color);
+}
+.settings-bg{
+    fill: var(--primary-color);
+}
 main{
     display: flex;
     padding: 2rem;
-    flex-direction: column;
+    flex-wrap: wrap;
     align-items: center;
+    gap: 2.25rem;
 }
-#client{
+.inicia-sessao,
+.client{
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -47,27 +61,44 @@ main{
     padding: 2.5rem;
     border-radius: 8px;
     border: solid 1px #c2c2c2c2;
+    position: relative;
+}
+.client{
+    width: 100%;
+}
+.inicia-sessao{
+    width: 45%;
+    margin: auto;
+    align-items: center;
+}
+.div-title{
+    color: var(--text-color);
+    font-size: var(--small-font-size);
+    font-weight: var(--font-bold);
+    position: absolute;
+    top: -1.5rem;
 }
 button{
-    border: 1px solid var(--title-color);
-    color: var(--title-color);
-    border-radius: 2rem;
     display: flex;
     align-items: center;
-    margin: auto;
-    padding: 1rem;
-    background-color: var(--primary-color);
+    border-radius: 2rem;
 }
 button svg{
     width: 4vh;
     height: 4vh;
-    margin-right: .5rem;
 }
 main input[type="text"]{
     padding: 1rem;
 }
 main button:hover{
    opacity: .9;
+}
+.newSessionButton img{
+width: 20vw;
+height: 28vh;
+border: 2px solid var(--title-color);
+border-radius: 2rem;
+padding: 1rem;
 }
 .textAreaPrompts{
     display: flex;
@@ -81,6 +112,10 @@ main button:hover{
     gap: 1.5vh;
     width: fit-content;
   }
+.inputContainer p{
+    font-size: var(--small-font-size);
+    margin-bottom: .5rem;
+}
 .promptInput,
 .faqInput {
     width: 100%;
@@ -195,17 +230,17 @@ textarea {
     font-weight: var(--font-bold);
     font-size: var(--h3-font-size);
   }
-  .progress-container {
+  .progressContainer {
     width: 100%;
     height: 20px;
     background-color: #ddd;
     border-radius: 5px;
     overflow: hidden;
     position: relative;
-    display: none; /* Inicialmente escondido */
+    display: none;
 }
 
-.progress-bar {
+.progressBar {
     width: 0%;
     height: 100%;
     background-color: var(--title-color);

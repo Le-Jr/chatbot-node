@@ -5,7 +5,7 @@ document.querySelectorAll("textarea").forEach((textarea) => {
   });
 });
 
-var actionType;
+let actionType;
 const loading = document.querySelector(".loading");
 const loadingText = document.getElementById("loadingWarning");
 
