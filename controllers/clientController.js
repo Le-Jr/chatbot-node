@@ -4,6 +4,8 @@ import { Clients } from "../models/Clients.js";
 import { PreviousContacts } from "../models/PreviousContacts.js";
 import { Wjt } from "../models/Wtj.js";
 
+const createdClients=[]
+
 export class clientController {
   static async startClientSession(req, res) {
     try {
@@ -14,7 +16,6 @@ export class clientController {
         },
       });
 
-      console.log("aqui tem que passar");
 
       if (auth) {
         const currentUser = await Clients.findOne({
@@ -22,9 +23,8 @@ export class clientController {
             id: req.body.id,
           },
         });
-        console.log(currentUser.id);
-        await create({
-          // session: String(currentUser.name),
+        
+        let currentSession = await create({
           session: `whatsapp_bot_${currentUser.id}`,
           puppeteerOptions: {
             headless: true,
@@ -39,7 +39,6 @@ export class clientController {
           catchQR: async (base64Qr, attempts) => {
             currentUser.qrCode = base64Qr;
             res.json({ qrCode: base64Qr });
-            // res.json(currentUser);
           },
         })
           .then((client) => {
@@ -48,9 +47,7 @@ export class clientController {
               return;
             }
 
-            console.log("✅ Cliente criado adquadamente: ");
 
-            // console.log("aqui é o then");
             client.onMessage(async (message) => {
               if (!client.connected || typeof client.sendText !== "function") {
                 console.error(
@@ -60,7 +57,6 @@ export class clientController {
               }
 
               const phoneNumber = message.from.replace(/\D/g, "").slice(-13);
-              // const phoneNumber = message.from.slice(0, 13);
 
               try {
                 await clientController.sendMessage(
@@ -89,6 +85,8 @@ export class clientController {
       console.error("Unexpected error:", error);
       res.status(500).json({ error: "Internal server error" });
     }
+    createdClients.push(currentSession)
+    console.log(createdClients)
   }
 
   static async isPreviousContact(client, phoneNumber) {
@@ -105,8 +103,6 @@ export class clientController {
     }
     return false;
   }
-
-  static async getContextMessage(client, phoneNumber) {}
 
   static async sendMessage(message, client, clientInfos, phoneNumber) {
     if (!message.from.includes("status") && !message.isGroupMsg) {

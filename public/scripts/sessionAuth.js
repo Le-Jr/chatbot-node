@@ -74,9 +74,8 @@ updatePromptButton.addEventListener("click", () => {
       .catch((error) => {
         console.error("Erro ao fazer a requisição:", error);
       });
-  }
-  //});
-  else if (actionType == "FAQ") {
+  
+  if (actionType == "FAQ") {
     // Faq update
     //updateFaqButton.addEventListener("click", () => {
     faqInput = document.querySelector(".faqInput");
@@ -91,6 +90,7 @@ updatePromptButton.addEventListener("click", () => {
     .catch((error) => {
       console.error("Erro ao fazer a requisição:", error);
     });
+  }
 })
 
 updateFaqButton.addEventListener("click", () => {
