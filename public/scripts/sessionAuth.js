@@ -69,8 +69,9 @@ function confirmAction() {
       .catch((error) => {
         console.error("Erro ao fazer a requisição:", error);
       });
-  
-  if (actionType == "FAQ") {
+  }
+  //});
+  else if (actionType == "FAQ") {
     // Faq update
     faqInput = document.querySelector(".faqInput");
     user.faq = faqInput.value;
