@@ -44,22 +44,17 @@ fetch(`/user/${user.id}/${user.token}`, {
     console.error("Erro ao fazer a requisição:", error);
   });
 
-updatePromptButton.addEventListener("click", () => {
-
-  promptInput = document.querySelector(".promptInput");
-  user.prompt = promptInput.value
-  fetch(`/promptUpdate/${user.id}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(user),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Erro na requisição");
-      }
-      return currentUser = response.json();
+function confirmAction() {
+  if (actionType == "Prompt") {
+    //Prompt Update
+    promptInput = document.querySelector(".promptInput");
+    user.prompt = promptInput.value;
+    fetch(`/promptUpdate/${user.id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
     })
       .then((response) => {
         closeModal();
@@ -78,43 +73,31 @@ updatePromptButton.addEventListener("click", () => {
   //});
   else if (actionType == "FAQ") {
     // Faq update
-    //updateFaqButton.addEventListener("click", () => {
     faqInput = document.querySelector(".faqInput");
     user.faq = faqInput.value;
-    fetch(`/client/faqUpdate/${user.id}`, {
+    fetch(`/faqUpdate/${user.id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(user),
     })
-    .catch((error) => {
-      console.error("Erro ao fazer a requisição:", error);
-    });
-})
-
-updateFaqButton.addEventListener("click", () => {
-
-  faqInput = document.querySelector(".faqInput");
-  user.faq = faqInput.value
-  fetch(`/faqUpdate/${user.id}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(user),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Erro na requisição");
-      }
-      return currentUser = response.json();
-    })
-    .then((data) => {
-      console.log(data)
-    })
-    .catch((error) => {
-      console.error("Erro ao fazer a requisição:", error);
-    });
-})
-
+      .catch((error) => {
+        console.error("Erro ao fazer a requisição:", error);
+      })
+      //})
+      .then((response) => {
+        closeModal();
+        if (!response.ok) {
+          throw new Error("Erro na requisição");
+        }
+        return (currentUser = response.json());
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Erro ao fazer a requisição:", error);
+      });
+  }
+}
