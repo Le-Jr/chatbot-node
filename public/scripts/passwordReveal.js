@@ -22,10 +22,12 @@ document.addEventListener("DOMContentLoaded", () => {
   let eyeClosed = document.querySelector("#eyeClosed");
   let eyeClosedConfirm = document.querySelector("#eyeClosedConfirm");
 
-  passwordConfirmbutton.addEventListener("click", (e) => {
-    e.stopPropagation();
-    togglePasswordVisibility(passwordConfirm, eyeConfirm, eyeClosedConfirm);
-  });
+  if (passwordConfirmbutton) {
+    passwordConfirmbutton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      togglePasswordVisibility(passwordConfirm, eyeConfirm, eyeClosedConfirm);
+    });
+  }
 
   passwordButton.addEventListener("click", (e) => {
     e.stopPropagation();
