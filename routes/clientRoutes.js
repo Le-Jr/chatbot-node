@@ -35,5 +35,9 @@ router.post(
   "/user/:id/:wtj/createSession",
   clientController.startClientSession
 );
+router.post(
+  "/user/:id/:wtj/logout",
+  clientController.logoutSession
+);
 
 

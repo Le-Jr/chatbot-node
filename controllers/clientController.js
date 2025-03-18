@@ -4,7 +4,7 @@ import { Clients } from "../models/Clients.js";
 import { PreviousContacts } from "../models/PreviousContacts.js";
 import { Wjt } from "../models/Wtj.js";
 
-const createdClients=[]
+let createdSessions = {}
 
 export class clientController {
   static async startClientSession(req, res) {
@@ -23,7 +23,7 @@ export class clientController {
             id: req.body.id,
           },
         });
-        
+
         let currentSession = await create({
           session: `whatsapp_bot_${currentUser.id}`,
           puppeteerOptions: {
@@ -73,6 +73,9 @@ export class clientController {
                 );
               }
             });
+            createdSessions[currentUser.id] = client
+            Clients.update({ isActiveSession: 1 }, { where: { id: currentUser.id } })
+
           })
           .catch((error) => {
             console.error("Error creating client:", error);
@@ -82,13 +85,20 @@ export class clientController {
           });
       }
     } catch (err) {
-      console.error("Unexpected error:", error);
+      console.error("Unexpected error:", err);
       res.status(500).json({ error: "Internal server error" });
     }
-    createdClients.push(currentSession)
-    console.log(createdClients)
   }
-
+  static async logoutSession(req, res) {
+    try {
+      createdSessions[req.body.id].close()
+      await Clients.update({ isActiveSession: 0 }, { where: { id: req.body.id } })
+      res.json({ result: "seção fechada com sucesso" })
+    }
+    catch {
+      res.json({ error: "deu ruim" })
+    }
+  }
   static async isPreviousContact(client, phoneNumber) {
     const isContact = await PreviousContacts.findAll({
       raw: true,
