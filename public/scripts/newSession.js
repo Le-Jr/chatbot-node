@@ -1,5 +1,6 @@
 const buttonForNewSession = document.querySelector(".newSessionButton");
 const qrCode = document.querySelector(".qrCodeDiv");
+const progressContainer = document.querySelector(".progressContainer");
 
 buttonForNewSession.addEventListener("click", () => {
   loading.style.display = "flex";
@@ -23,6 +24,7 @@ buttonForNewSession.addEventListener("click", () => {
       qrCode.innerHTML = `<img src="${data.qrCode}">`;
       loading.style.display = "none";
       loadingText.style.display = "none";
+      progressContainer.style.display = "block";
     })
     .catch((error) => {
       console.error("Erro ao fazer a requisição:", error);

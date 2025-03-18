@@ -3,14 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>bem vindo</title>
-    <link rel="stylesheet" href="/stylesheets/app.css">
-    <link rel="stylesheet" href="/stylesheets/home.css">
+    <title>Página Cliente | MercurioChat</title>
+    <link rel="stylesheet" href="/stylesheets/app.css" />
+    <link rel="stylesheet" href="/stylesheets/home.css" />
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon" />
   </head>
   <body>
     <nav>
       <ul>
-        <li class="logo-nav"><img src="/assets/mercurioNavbar.svg" alt=""></li>
+        <li class="logo-nav">
+          <img src="/assets/mercurioNavbar.svg" alt="" />
+        </li>
         <li><a href="">Configuração</a></li>
         <li><a class="logout-link" href="">Sair</a></li>
       </ul>
@@ -18,26 +21,51 @@
     <main>
       <div id="client">
         <button class="newSessionButton">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#075E54">
-            <path d="M440-280h80v-160h160v-80H520v-160h-80v160H280v80h160v160Zm40 200q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 -960 960 960"
+            fill="#075E54"
+          >
+            <path
+              d="M440-280h80v-160h160v-80H520v-160h-80v160H280v80h160v160Zm40 200q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
+            />
           </svg>
           Iniciar conversa
         </button>
         <div class="textAreaPrompts">
           <div class="inputContainer">
-            <textarea type="text" class="promptInput" placeholder="Digite aqui o prompt da sua assistente"></textarea>
+            <h3>Editar Prompt</h3>
+            <p>
+              Insira um comando bem detalhado com instruções que você quer que
+              sua atendente IA execute, é muito importante que você seja o mais
+              claro possível nessas instruções
+            </p>
+            <textarea
+              type="text"
+              class="promptInput"
+              placeholder="Digite aqui o prompt da sua assistente"
+            ></textarea>
             <button class="updatePromptButton" onclick="openModal('Prompt')">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
-                <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/>
+                <path
+                  d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"
+                />
               </svg>
               Alterar prompt
             </button>
           </div>
           <div class="inputContainer">
-            <textarea type="text" class="faqInput" placeholder="Digite aqui o faq da sua assistente"></textarea>
+            <h3>Editar FAQ</h3>
+            <textarea
+              type="text"
+              class="faqInput"
+              placeholder="Digite aqui o faq da sua assistente"
+            ></textarea>
             <button class="updateFaqButton" onclick="openModal('FAQ')">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
-                <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h357l-80 80H200v560h560v-278l80-80v358q0 33-23.5 56.5T760-120H200Zm280-360ZM360-360v-170l367-367q12-12 27-18t30-6q16 0 30.5 6t26.5 18l56 57q11 12 17 26.5t6 29.5q0 15-5.5 29.5T897-728L530-360H360Zm481-424-56-56 56 56ZM440-440h56l232-232-28-28-29-28-231 231v57Zm260-260-29-28 29 28 28 28-28-28Z"/>
+                <path
+                  d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h357l-80 80H200v560h560v-278l80-80v358q0 33-23.5 56.5T760-120H200Zm280-360ZM360-360v-170l367-367q12-12 27-18t30-6q16 0 30.5 6t26.5 18l56 57q11 12 17 26.5t6 29.5q0 15-5.5 29.5T897-728L530-360H360Zm481-424-56-56 56 56ZM440-440h56l232-232-28-28-29-28-231 231v57Zm260-260-29-28 29 28 28 28-28-28Z"
+                />
               </svg>
               Alterar faq
             </button>
@@ -50,7 +78,9 @@
         <p id="modalMessage">Você deseja confirmar a alteração?</p>
         <div class="modal-buttons">
           <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
-          <button class="btn-confirm" onclick="confirmAction()">Confirmar</button>
+          <button class="btn-confirm" onclick="confirmAction()">
+            Confirmar
+          </button>
         </div>
       </div>
     </div>
@@ -62,13 +92,15 @@
           <span class="points"></span>
           <span class="points"></span>
         </div>
+        <div class="progress-container">
+          <div class="progress-bar"></div>
+        </div>
         <div class="qrCodeDiv"></div>
         <div class="modal-buttons">
-        <button class="btn-cancel" onclick="closeModal()">Fechar</button>
+          <button class="btn-cancel" onclick="closeModal()">Fechar</button>
         </div>
       </div>
     </div>
-
   </body>
   <script src="/scripts/sessionAuth.js"></script>
   <script src="/scripts/newSession.js"></script>

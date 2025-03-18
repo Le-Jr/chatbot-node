@@ -8,10 +8,6 @@ dotenv.config();
 const GOOGLE_CLIENT_ID = process.env["GOOGLE_CLIENT_ID"];
 const GOOGLE_CLIENT_SECRET = process.env["GOOGLE_CLIENT_SECRET"];
 
-// console.log("Chave google: ", GOOGLE_CLIENT_ID);
-
-// console.log("✅ googleAuth.js foi carregado!");
-
 passport.use(
   new GoogleStrategy(
     {
@@ -56,7 +52,5 @@ passport.deserializeUser(async (id, done) => {
     done(err, null);
   }
 });
-
-// console.log("✅ Estratégia do Google foi registrada no Passport!");
 
 export default passport;
