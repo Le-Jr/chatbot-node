@@ -29,9 +29,11 @@ router.get(
 );
 
 // Rotas Autenticação
-router.get("/user/:id/:wtj", ServerController.loggedClient);
-router.post("/user/:id/:wtj", ServerController.authClient);
+router.get("/user/:id/:wtj",ServerController.authClient, ServerController.loggedClient);
+router.post("/user/:id/:wtj", ServerController.getClient);
 router.post(
   "/user/:id/:wtj/createSession",
   clientController.startClientSession
 );
+
+
