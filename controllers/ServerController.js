@@ -12,7 +12,7 @@ export class ServerController {
   }
 
   static registerPage(req, res) {
-    res.render("register", { error: "Por equanto nada", verifyClient: false });
+    res.render("register", { error: "Por enquanto nada", verifyClient: false });
   }
 
   static async createUser(req, res) {
