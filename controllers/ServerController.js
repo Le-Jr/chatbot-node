@@ -104,7 +104,7 @@ export class ServerController {
   static async loggedClient(req, res) {
     res.render("logged");
   }
-  static async authClient(req, res) {
+  static async getClient(req, res) {
     const user = await req.body;
     const teste = await Wjt.findOne({
       where: {
@@ -119,7 +119,28 @@ export class ServerController {
       res.json(false);
     }
   }
+  static async authClient(req,res,next){
+    const user = {
 
+      id:req.params.id,
+      token:req.params.wtj
+
+    }
+    const teste = await Wjt.findOne({
+      where: {
+        clientId: user.id,
+        wtjId: user.token,
+      },
+    });
+
+    if (teste) {
+      const currentUser = await Clients.findOne({ where: { id: user.id } });
+      next()
+    } else {
+      res.status(401).send()
+    }
+
+  }
   static googleAuth = passport.authenticate("google", {
     scope: ["email", "profile"],
     prompt: "select_account",
