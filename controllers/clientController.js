@@ -99,6 +99,13 @@ export class clientController {
       res.json({ error: "deu ruim" })
     }
   }
+  static async isActiveSession(req, res) {
+    if (createdSessions[req.body.id] != '') {
+      res.json({ result: "seção persiste" })
+    }
+    res.json({ result: "seção pode ser Aberta" })
+
+  }
   static async isPreviousContact(client, phoneNumber) {
     const isContact = await PreviousContacts.findAll({
       raw: true,
@@ -122,17 +129,19 @@ export class clientController {
       );
       if (isPreviousContact) {
         const responseChunks = await generateAnswer(
-          `${isPreviousContact.context}\n ${phoneNumber}:${message.body}`,
+          `${clientInfos.config}. lembre-se de responder o mais naturalmente possível, humanos não costumam comprimentar ou se despedir em toda interação, evite o uso de listas, adote um formato de escrita com um padrão mais cotidiâno. a seguir temos o contexto da conversa que você já teve: /${phoneNumber}:${message.body} `,
           (chunk) => {
             console.log("Bot:", chunk);
             return chunk;
           }
         );
 
-        let updatedContext = `${isPreviousContact.context}\n ${phoneNumber}:${message.body}\n`;
+
+        let updatedContext = `${isPreviousContact.context}\n /${phoneNumber}:${message.body}\n`;
         responseChunks.forEach((chunk) => {
-          updatedContext += `chatgpt:${chunk}\n`; // Adiciona cada parte separada ao contexto
+          updatedContext += `/chatgpt:${chunk}\n`; // Adiciona cada parte separada ao contexto
         });
+
 
         await PreviousContacts.update(
           {
@@ -147,7 +156,7 @@ export class clientController {
               clientId: clientInfos.id,
             },
           }
-        );
+        )
 
         responseChunks.forEach(async (chunk, index) => {
           await new Promise(
@@ -164,7 +173,6 @@ export class clientController {
         await PreviousContacts.create({
           phoneNumber: phoneNumber,
           clientId: clientInfos.id,
-          context: clientInfos.config,
         });
         client.sendText(message.from, clientInfos.faq);
       }
