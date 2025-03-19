@@ -58,6 +58,7 @@ function confirmAction() {
     })
       .then((response) => {
         closeModal();
+        showSucess();
         if (!response.ok) {
           throw new Error("Erro na requisição");
         }
@@ -88,6 +89,7 @@ function confirmAction() {
       //})
       .then((response) => {
         closeModal();
+        showSucess();
         if (!response.ok) {
           throw new Error("Erro na requisição");
         }

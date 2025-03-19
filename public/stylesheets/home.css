@@ -91,7 +91,7 @@ main input[type="text"]{
     padding: 1rem;
 }
 main button:hover{
-   opacity: .9;
+    filter: brightness(0.8);
 }
 .newSessionButton img{
 width: 20vw;
@@ -102,15 +102,27 @@ padding: 1rem;
 }
 .textAreaPrompts{
     display: flex;
-    gap: 3.5vw;
     align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+#help-prompt-button{
+    width: 100%;
+    display: flex;
+    padding-bottom: 2rem;
+    font-weight: var(--font-semi-bold);
+}
+#help-prompt-button button{
+    color: var(--title-color);
+    background: none;
+    padding-left: 5px;
 }
 .inputContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1.5vh;
-    width: fit-content;
+    width: 40vw;
   }
 .inputContainer p{
     font-size: var(--small-font-size);
@@ -139,7 +151,9 @@ padding: 1rem;
   fill: white;
 }
 .qrCodeDiv {
+  display: none;  
   margin-top: 10px;
+  padding: 10%;
 }
 textarea {
     width: 100%;
@@ -171,7 +185,12 @@ textarea {
     width: 300px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   }
-
+  #qrCodeModal .modal-content{
+    width: 35vw;
+    flex-direction: column;
+    align-items: center;
+    display: flex;
+  }
   .modal-buttons {
     display: flex;
     justify-content: space-around;
@@ -205,6 +224,13 @@ textarea {
     align-items: center;
     justify-content: center;
     margin: auto;
+  }
+  .progressWarning{
+    display: none;
+    color: var(--title-color);
+    font-size: smaller;
+    font-weight: var(--font-semi-bold);
+    padding: 1rem .5rem;
   }
   .points{
     border: var(--normal-font-size) solid var(--title-color);
@@ -254,4 +280,57 @@ textarea {
 
 @keyframes hide {
     to { opacity: 0; }
+}
+.success-message {
+    position: fixed;
+    width: 50%; 
+    left: 50%; 
+    top: 20px; 
+    transform: translateX(-50%);
+    background-color: #4caf50;
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease-in-out;
+    z-index: 1000;
+    display: none;
+}
+.success-text {
+    font-size: 16px;
+    font-weight: bold;
+}
+.regress-bar {
+    height: 4px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    transform-origin: left; 
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes regress {
+    from {
+        transform: scaleX(1); 
+    }
+    to {
+        transform: scaleX(0); 
+    }
+}
+.expiredMessage{
+  display: none;  
+  margin-top: 10px;
+  padding: 10%;
+}
+#regenerateButton{
+    display: none;
 }

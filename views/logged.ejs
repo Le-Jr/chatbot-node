@@ -36,6 +36,7 @@
       <div class="client">
         <p class="div-title">Editar atendimento</p>
         <div class="textAreaPrompts">
+          <p id="help-prompt-button">Ainda não tem o prompt?<button href="">Clique aqui</button></p>
           <div class="inputContainer">
             <h3>Editar Prompt</h3>
             <p>Insira um comando bem detalhado com instruções que você quer que sua atendente IA execute, é muito importante que você seja o mais claro possível nessas instruções</p>
@@ -78,14 +79,21 @@
           <span class="points"></span>
           <span class="points"></span>
         </div>
+        <p class="progressWarning">AVISO: O Qr code tem validade de 1 minuto após esse tempo, caso a sessão não seja iniciada será necessário gerar outro</p>
         <div class="progressContainer">
           <div class="progressBar"></div>
         </div>
         <div class="qrCodeDiv"></div>
+        <div class="expiredMessage">tem q gerar outro QR code paizão</div>
         <div class="modal-buttons">
-        <button class="btn-cancel" onclick="closeModal()">Fechar</button>
+        <button class="btn-cancel" onclick="closeModal()" id="close-qr-div">Fechar</button>
+        <button class="btn-confirm" id="regenerateButton">Gerar novo Qr Code</button>
         </div>
       </div>
+    </div>
+    <div class="success-message">
+      <span class="sucess-text"></span>
+      <div class="regress-bar"></div>
     </div>
 
   </body>
