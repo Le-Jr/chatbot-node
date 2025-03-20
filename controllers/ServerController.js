@@ -12,49 +12,40 @@ export class ServerController {
   }
 
   static registerPage(req, res) {
-    res.render("register");
+    res.render("register", { error: "Por enquanto nada", verifyClient: false });
   }
 
   static async createUser(req, res) {
-    const password = await bcrypt.hash(req.body.password, 10);
-    const user = {
-      name: req.body.name,
-      email: req.body.email,
-      password: password,
-    };
+    try {
+      const password = await bcrypt.hash(req.body.password, 10);
+      const user = {
+        name: req.body.name,
+        email: req.body.email,
+        password: password,
+      };
+      const verifyClient = await Clients.findOne({
+        where: { email: user.email },
+      });
+      if (verifyClient) {
+        return res.render("register", {
+          error: "Email já cadastrado",
+          verifyClient: true,
+        });
+      }
 
-    await Clients.create(user);
-    const newClient = await Clients.findOne({
-      raw: true,
-      where: { email: user.email },
-    });
-    const newWtj = await Wjt.create({ clientId: newClient.id });
+      await Clients.create(user);
+      const newClient = await Clients.findOne({
+        raw: true,
+        where: { email: user.email },
+      });
+      const newWtj = await Wjt.create({ clientId: newClient.id });
 
-    res.redirect(`/client/user/${newClient.id}/${newWtj.wtjId}`);
+      res.redirect(`/user/${newClient.id}/${newWtj.wtjId}`);
+    } catch (err) {
+      console.log("Erro na criação: ", err);
+    }
   }
 
-  static async readUser(req, res) {
-    const id = req.params.id;
-    const client = await Clients.findOne({ where: { id: id }, raw: true });
-
-    res.render("readClients", { client });
-  }
-
-  static async updateUser(req, res) {
-    const id = req.params.id;
-    const name = req.body.name;
-    const email = req.body.email;
-    const faq = req.body.faq;
-    const prompt = req.body.prompt;
-
-    let client = await Clients.update(
-      { name: name, email: email, faq: faq, config: prompt },
-      { where: { id: id } }
-    );
-
-    client = await Clients.findOne({ where: { id: id }, raw: true });
-    res.render("readClients", { client });
-  }
   static async updatePromptUser(req, res) {
     const user = req.body;
     try {
@@ -113,7 +104,7 @@ export class ServerController {
   static async loggedClient(req, res) {
     res.render("logged");
   }
-  static async authClient(req, res) {
+  static async getClient(req, res) {
     const user = await req.body;
     const teste = await Wjt.findOne({
       where: {
@@ -128,7 +119,28 @@ export class ServerController {
       res.json(false);
     }
   }
+  static async authClient(req,res,next){
+    const user = {
 
+      id:req.params.id,
+      token:req.params.wtj
+
+    }
+    const teste = await Wjt.findOne({
+      where: {
+        clientId: user.id,
+        wtjId: user.token,
+      },
+    });
+
+    if (teste) {
+      const currentUser = await Clients.findOne({ where: { id: user.id } });
+      next()
+    } else {
+      res.status(401).send()
+    }
+
+  }
   static googleAuth = passport.authenticate("google", {
     scope: ["email", "profile"],
     prompt: "select_account",

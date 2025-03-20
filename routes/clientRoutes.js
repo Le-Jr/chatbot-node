@@ -6,16 +6,13 @@ import passport from "passport";
 
 router.get("/register", ServerController.registerPage);
 router.post("/register", ServerController.createUser);
-router.get("/read/:id", ServerController.readUser);
-router.post("/read/:id", ServerController.updateUser);
+
 router.get("/", ServerController.loginView);
 router.get("/login", ServerController.loginView);
 router.post("/login", ServerController.loginUser);
 
-router.post('/promptUpdate/:id',ServerController.updatePromptUser)
-router.post('/faqUpdate/:id',ServerController.updateFaqUser)
-
-
+router.post("/promptUpdate/:id", ServerController.updatePromptUser);
+router.post("/faqUpdate/:id", ServerController.updateFaqUser);
 
 router.get("/session", (req, res) => {
   res.json(req.user || { message: "Nenhum usuário logado!" });
@@ -32,9 +29,15 @@ router.get(
 );
 
 // Rotas Autenticação
-router.get("/user/:id/:wtj", ServerController.loggedClient);
-router.post("/user/:id/:wtj", ServerController.authClient);
+router.get("/user/:id/:wtj",ServerController.authClient, ServerController.loggedClient);
+router.post("/user/:id/:wtj", ServerController.getClient);
 router.post(
   "/user/:id/:wtj/createSession",
   clientController.startClientSession
 );
+router.post(
+  "/user/:id/:wtj/logout",
+  clientController.logoutSession
+);
+
+

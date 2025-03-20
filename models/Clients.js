@@ -24,6 +24,18 @@ export const Clients = dataBase.define(
       type: DataTypes.CHAR,
       allowNull: true,
     },
+    isActiveSession: {
+      type: DataTypes.BOOLEAN,
+      defaultValue:false
+    },
+    isFirstEnter: {
+      type: DataTypes.BOOLEAN,
+      defaultValue:false
+    },
+    wasPurchased: {
+      type: DataTypes.BOOLEAN,
+      defaultValue:false
+    },
     // role: DataTypes.ENUM,
     phoneNumber: DataTypes.STRING,
     sessionPath: DataTypes.STRING,
