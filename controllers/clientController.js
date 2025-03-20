@@ -3,11 +3,13 @@ import { generateAnswer } from "../utils/openai_config.js";
 import { Clients } from "../models/Clients.js";
 import { PreviousContacts } from "../models/PreviousContacts.js";
 import { Wjt } from "../models/Wtj.js";
+import { io } from "../index.js"
 
 let createdSessions = {}
 
 export class clientController {
   static async startClientSession(req, res) {
+    console.log(req.body)
     try {
       const auth = await Wjt.findOne({
         where: {
@@ -73,9 +75,9 @@ export class clientController {
                 );
               }
             });
-            createdSessions[currentUser.id] = client
-            Clients.update({ isActiveSession: 1 }, { where: { id: currentUser.id } })
 
+
+            createdSessions[currentUser.id] = client
           })
           .catch((error) => {
             console.error("Error creating client:", error);
@@ -83,6 +85,11 @@ export class clientController {
               .status(500)
               .json({ error: "Failed to initialize WhatsApp client" });
           });
+
+        Clients.update({ isActiveSession: 1 }, { where: { id: currentUser.id } })
+        const socket = io.sockets.sockets.get(req.body.wsId)
+        socket.emit("message", "usuário escaneou o qr code");
+
       }
     } catch (err) {
       console.error("Unexpected error:", err);
