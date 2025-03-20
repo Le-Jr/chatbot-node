@@ -22,9 +22,11 @@ nav a{
     padding: 1em 2em;
     transition: background-color 350ms ease;
 }
-nav a:hover{
-    background-color: var(--primary-color);
-    color: var(--title-color);
+nav a:hover svg .settings-icon{
+    fill: var(--primary-color);
+}
+nav a:hover svg .settings-bg{
+    fill: var(--title-color);
 }
 nav a.logout-link{
     background-color: var(--error-color);
@@ -33,13 +35,25 @@ nav a.logout-link:hover{
     background-color: var(--primary-color);
     color: var(--error-color);
 }
+.nav-link{
+    width: 7rem;
+    height: 7rem;
+}
+.settings-icon{
+    fill: var(--title-color);
+}
+.settings-bg{
+    fill: var(--primary-color);
+}
 main{
     display: flex;
     padding: 2rem;
-    flex-direction: column;
+    flex-wrap: wrap;
     align-items: center;
+    gap: 2.25rem;
 }
-#client{
+.inicia-sessao,
+.client{
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -47,40 +61,73 @@ main{
     padding: 2.5rem;
     border-radius: 8px;
     border: solid 1px #c2c2c2c2;
+    position: relative;
+}
+.client{
+    width: 100%;
+}
+.inicia-sessao{
+    width: 45%;
+    margin: auto;
+    align-items: center;
+}
+.div-title{
+    color: var(--text-color);
+    font-size: var(--small-font-size);
+    font-weight: var(--font-bold);
+    position: absolute;
+    top: -1.5rem;
 }
 button{
-    border: 1px solid var(--title-color);
-    color: var(--title-color);
-    border-radius: 2rem;
     display: flex;
     align-items: center;
-    margin: auto;
-    padding: 1rem;
-    background-color: var(--primary-color);
+    border-radius: 2rem;
 }
 button svg{
     width: 4vh;
     height: 4vh;
-    margin-right: .5rem;
 }
 main input[type="text"]{
     padding: 1rem;
 }
 main button:hover{
-   opacity: .9;
+    filter: brightness(0.8);
+}
+.newSessionButton img{
+width: 20vw;
+height: 28vh;
+border: 2px solid var(--title-color);
+border-radius: 2rem;
+padding: 1rem;
 }
 .textAreaPrompts{
     display: flex;
-    gap: 3.5vw;
     align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+#help-prompt-button{
+    width: 100%;
+    display: flex;
+    padding-top: 2rem;
+    font-weight: var(--font-semi-bold);
+}
+#help-prompt-button button{
+    color: var(--title-color);
+    background: none;
+    padding-left: 5px;
 }
 .inputContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1.5vh;
-    width: fit-content;
+    width: 40vw;
   }
+.inputContainer p{
+    font-size: var(--small-font-size);
+    margin-bottom: .5rem;
+}
 .promptInput,
 .faqInput {
     width: 100%;
@@ -104,7 +151,9 @@ main button:hover{
   fill: white;
 }
 .qrCodeDiv {
+  display: none;  
   margin-top: 10px;
+  padding: 10%;
 }
 textarea {
     width: 100%;
@@ -136,11 +185,17 @@ textarea {
     width: 300px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   }
-
+  #qrCodeModal .modal-content{
+    width: 35vw;
+    flex-direction: column;
+    align-items: center;
+    display: flex;
+  }
   .modal-buttons {
     display: flex;
     justify-content: space-around;
     margin-top: 15px;
+    gap: 10px;
   }
 
   .modal-buttons button {
@@ -171,6 +226,13 @@ textarea {
     justify-content: center;
     margin: auto;
   }
+  .progressWarning{
+    display: none;
+    color: var(--title-color);
+    font-size: smaller;
+    font-weight: var(--font-semi-bold);
+    padding: 1rem .5rem;
+  }
   .points{
     border: var(--normal-font-size) solid var(--title-color);
     border-radius: 50%;
@@ -195,17 +257,17 @@ textarea {
     font-weight: var(--font-bold);
     font-size: var(--h3-font-size);
   }
-  .progress-container {
+  .progressContainer {
     width: 100%;
     height: 20px;
     background-color: #ddd;
     border-radius: 5px;
     overflow: hidden;
     position: relative;
-    display: none; /* Inicialmente escondido */
+    display: none;
 }
 
-.progress-bar {
+.progressBar {
     width: 0%;
     height: 100%;
     background-color: var(--title-color);
@@ -219,4 +281,65 @@ textarea {
 
 @keyframes hide {
     to { opacity: 0; }
+}
+.error-message,
+.success-message {
+    position: fixed;
+    height: 15vh;
+    width: 50%; 
+    left: 50%; 
+    top: 20px; 
+    transform: translateX(-50%);
+    padding: 15px 20px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease-in-out;
+    z-index: 1000;
+    display: none;
+}
+.success-message{
+    background-color: #7ee776;
+    color: #008000;
+}
+.error-message{
+    background-color: #ff5555;
+    color: var(--primary-color);
+}
+.success-text {
+    font-size: 16px;
+    font-weight: bold;
+}
+.regress-bar {
+    height: 4px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    transform-origin: left; 
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes regress {
+    from {
+        transform: scaleX(1); 
+    }
+    to {
+        transform: scaleX(0); 
+    }
+}
+.expiredMessage{
+  display: none;  
+  margin-top: 10px;
+  padding: 10%;
+}
+#regenerateButton{
+    display: none;
 }
