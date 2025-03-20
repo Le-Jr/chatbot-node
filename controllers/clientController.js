@@ -4,7 +4,7 @@ import { Clients } from "../models/Clients.js";
 import { PreviousContacts } from "../models/PreviousContacts.js";
 import { Wjt } from "../models/Wtj.js";
 
-const createdClients=[]
+let createdSessions = {}
 
 export class clientController {
   static async startClientSession(req, res) {
@@ -23,7 +23,7 @@ export class clientController {
             id: req.body.id,
           },
         });
-        
+
         let currentSession = await create({
           session: `whatsapp_bot_${currentUser.id}`,
           puppeteerOptions: {
@@ -73,6 +73,9 @@ export class clientController {
                 );
               }
             });
+            createdSessions[currentUser.id] = client
+            Clients.update({ isActiveSession: 1 }, { where: { id: currentUser.id } })
+
           })
           .catch((error) => {
             console.error("Error creating client:", error);
@@ -82,13 +85,27 @@ export class clientController {
           });
       }
     } catch (err) {
-      console.error("Unexpected error:", error);
+      console.error("Unexpected error:", err);
       res.status(500).json({ error: "Internal server error" });
     }
-    createdClients.push(currentSession)
-    console.log(createdClients)
   }
+  static async logoutSession(req, res) {
+    try {
+      createdSessions[req.body.id].close()
+      await Clients.update({ isActiveSession: 0 }, { where: { id: req.body.id } })
+      res.json({ result: "seção fechada com sucesso" })
+    }
+    catch {
+      res.json({ error: "deu ruim" })
+    }
+  }
+  static async isActiveSession(req, res) {
+    if (createdSessions[req.body.id] != '') {
+      res.json({ result: "seção persiste" })
+    }
+    res.json({ result: "seção pode ser Aberta" })
 
+  }
   static async isPreviousContact(client, phoneNumber) {
     const isContact = await PreviousContacts.findAll({
       raw: true,
@@ -112,17 +129,19 @@ export class clientController {
       );
       if (isPreviousContact) {
         const responseChunks = await generateAnswer(
-          `${isPreviousContact.context}\n ${phoneNumber}:${message.body}`,
+          `${clientInfos.config}. lembre-se de responder o mais naturalmente possível, humanos não costumam comprimentar ou se despedir em toda interação, evite o uso de listas, adote um formato de escrita com um padrão mais cotidiâno. a seguir temos o contexto da conversa que você já teve: /${phoneNumber}:${message.body} `,
           (chunk) => {
             console.log("Bot:", chunk);
             return chunk;
           }
         );
 
-        let updatedContext = `${isPreviousContact.context}\n ${phoneNumber}:${message.body}\n`;
+
+        let updatedContext = `${isPreviousContact.context}\n /${phoneNumber}:${message.body}\n`;
         responseChunks.forEach((chunk) => {
-          updatedContext += `chatgpt:${chunk}\n`; // Adiciona cada parte separada ao contexto
+          updatedContext += `/chatgpt:${chunk}\n`; // Adiciona cada parte separada ao contexto
         });
+
 
         await PreviousContacts.update(
           {
@@ -137,7 +156,7 @@ export class clientController {
               clientId: clientInfos.id,
             },
           }
-        );
+        )
 
         responseChunks.forEach(async (chunk, index) => {
           await new Promise(
@@ -154,7 +173,6 @@ export class clientController {
         await PreviousContacts.create({
           phoneNumber: phoneNumber,
           clientId: clientInfos.id,
-          context: clientInfos.config,
         });
         client.sendText(message.from, clientInfos.faq);
       }

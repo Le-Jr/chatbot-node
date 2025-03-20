@@ -35,9 +35,6 @@ app.use(passport.session());
 
 app.use("/", router);
 
-
-console.log("📌 Estratégias registradas no Passport:", passport._strategies);
-
 const clientes = await Clients.findAll({ raw: "true" });
 
 // clientController.startClientSession(clientes);
