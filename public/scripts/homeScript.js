@@ -1,10 +1,13 @@
-let actionType;
 const loading = document.querySelector(".loading");
 const loadingText = document.getElementById("loadingWarning");
 const textareas = document.querySelectorAll("textarea");
 const success = document.querySelector(".success-message");
 const regress = document.querySelector(".regress-bar");
+const errorModal = document.querySelector(".error-message");
 const errorMessage = document.querySelector(".error-message");
+
+let actionType;
+let errorText;
 
 document.querySelectorAll("textarea").forEach((textarea) => {
   textarea.addEventListener("input", function () {
@@ -28,7 +31,7 @@ function validateTextareasEmpty() {
 }
 
 function compareTextareas() {
-  fetch(`/user/${user.id}/${user.token}`, {
+  return fetch(`/user/${user.id}/${user.token}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -43,21 +46,24 @@ function compareTextareas() {
     })
     .then((data) => {
       const currentUser = data.currentUser;
-      if (currentUser.config != textareas[0].value) {
-        errorMessage.style.display = "block";
-        errorMessage.innerHTML = `<span class="sucess-text">Salve as alterações do prompt antes iniciar</span>`;
+      if (
+        currentUser.config != textareas[0].value ||
+        currentUser.faq != textareas[1].value
+      ) {
+        if (currentUser.config != textareas[0].value) {
+          errorText = "Salve as alterações do Prompt antes de iniciar";
+        } else {
+          errorText =
+            "Salve as alterações da mensagem inicial antes de iniciar";
+        }
+        showError();
         return false;
       }
-      if (currentUser.faq != textareas[1].value) {
-        errorMessage.style.display = "block";
-        errorMessage.innerHTML = `<span class="sucess-text">Salve as alterações da mensagem inicial antes iniciar</span>`;
-        return false;
-      }
+      return true;
     })
     .catch((error) => {
       console.error("Erro ao fazer a requisição:", error);
     });
-  return true;
 }
 
 function openModal(type) {
@@ -88,6 +94,19 @@ function showSucess() {
     success.style.display = "none";
     regress.style.display = "none";
     success.innerHTML = "";
+    regress.style.animation = "";
+  }, 5000);
+}
+
+function showError() {
+  errorModal.style.display = "block";
+  regress.style.display = "block";
+  errorModal.innerHTML = `<span class="sucess-text">${errorText}</span>`;
+  regress.style.animation = "regress 5s linear forwards";
+  setTimeout(() => {
+    errorModal.style.display = "none";
+    regress.style.display = "none";
+    errorModal.innerHTML = "";
     regress.style.animation = "";
   }, 5000);
 }
