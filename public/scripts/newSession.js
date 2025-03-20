@@ -8,12 +8,24 @@ const stopRequestButton = document.getElementById("close-qr-div");
 
 //let controller = null;
 
-buttonForNewSession.addEventListener("click", () => {
+buttonForNewSession.addEventListener("click", (event) => {
   //controller = new AbortController();
   //const { signal } = controller;
+  event.preventDefault();
+  validateTextareasEmpty();
+  if (validateTextareasEmpty()) {
+    compareTextareas();
+    if (compareTextareas()) {
+      openQrCode();
+      createQrCode();
+    }
+  } else {
+    errorMessage.style.display = "block";
+    errorMessage.innerHTML = `<span class="sucess-text">Salve as alterações da mensagem inicial antes iniciar</span>`;
+  }
+});
 
-  openQrCode();
-
+function createQrCode() {
   if (loading) {
     loading.style.display = "flex";
     progressContainer.style.display = "none";
@@ -77,8 +89,7 @@ buttonForNewSession.addEventListener("click", () => {
         loadingText.style.display = "none";
       }
     });
-});
-/*if (stopRequestButton) {
+  /*if (stopRequestButton) {
   stopRequestButton.addEventListener("click", () => {
     if (controller) {
       controller.abort();
@@ -87,8 +98,9 @@ buttonForNewSession.addEventListener("click", () => {
     }
   });
 }*/
-if (regenerateButton) {
-  regenerateButton.addEventListener("click", () => {
-    buttonForNewSession.click(); // Simula clique no botão original para reaproveitar o código
-  });
+  if (regenerateButton) {
+    regenerateButton.addEventListener("click", () => {
+      buttonForNewSession.click(); // Simula clique no botão original para reaproveitar o código
+    });
+  }
 }
