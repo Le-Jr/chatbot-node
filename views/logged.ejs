@@ -20,6 +20,7 @@
           </path>
           </svg>
         </a></li>%>
+
         <li><a class="logout-link" href="">Sair</a></li>
       </ul>
     </nav>
@@ -28,6 +29,7 @@
         <p class="div-title">Iniciar sessão</p>
         <button class="newSessionButton">
           <img src="/assets/mercurio.svg" alt="">
+
         </button>
         <h2>Iniciar MercurioChat</h2>
       </div>
@@ -61,8 +63,10 @@
             </button>
           </div>
           <div class="inputContainer">
-            <h3>Editar FAQ</h3>
+            <h3>Mensagem inicial</h3>
+            <p>Insira no campo abaixo, a primeira mensagem para o seu cliente, esta mensagem é apenas uma apresentação da atendente após o cliente entrar em contato com ela</p>
             <textarea type="text" class="faqInput" placeholder="Digite aqui o faq da sua assistente"></textarea>
+
             <button class="updateFaqButton" onclick="openModal('FAQ')">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
                 <path
@@ -106,6 +110,21 @@
         </div>
       </div>
     </div>
+
+          <button class="btn-cancel" onclick="closeModal()" id="close-qr-div">Fechar</button>
+          <button class="btn-confirm" id="regenerateButton">Gerar novo Qr Code</button>
+        </div>
+      </div>
+    </div>
+    <div class="success-message">
+      <span class="sucess-text"></span>
+      <div class="regress-bar"></div>
+    </div>
+    <div class="error-message" id="error-message-modal">
+      <span class="sucess-text"></span>
+      <button class="btn-cancel" onclick="closeModal()">Fechar</button>
+    </div>
+
 
   </body>
   <script src="/scripts/sessionAuth.js"></script>
