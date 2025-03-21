@@ -155,6 +155,9 @@ padding: 1rem;
   margin-top: 10px;
   padding: 10%;
 }
+.qrCodeDiv img{
+    width: 100%;
+}
 textarea {
     width: 100%;
     min-height: 15vh;
@@ -285,8 +288,8 @@ textarea {
 .error-message,
 .success-message {
     position: fixed;
-    height: 15vh;
-    width: 50%; 
+    height: 10vh;
+    width: 35vw; 
     left: 50%; 
     top: 20px; 
     transform: translateX(-50%);
@@ -296,6 +299,7 @@ textarea {
     animation: fadeIn 0.5s ease-in-out;
     z-index: 1000;
     display: none;
+    justify-items: center;
 }
 .success-message{
     background-color: #7ee776;
@@ -342,4 +346,8 @@ textarea {
 }
 #regenerateButton{
     display: none;
+}
+
+@media screen and (max-width: 1250px){
+
 }
