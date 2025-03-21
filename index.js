@@ -1,51 +1,66 @@
 import "dotenv/config";
-import mongoose from "mongoose";
-import { create } from "@wppconnect-team/wppconnect";
-import { Client } from "./src/models/Client.js";
-import { generateAnswer } from "./src/utils/openai_config.js";
+import "dotenv/config";
+import express from "express";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
+import { dataBase } from "./db/conn.js";
+import { router } from "./routes/clientRoutes.js";
+import { render } from "ejs";
+import passport from "./config/googleAuth.js";
+import session from "express-session";
+import { Clients } from "./models/Clients.js";
+import { PreviousContacts } from "./models/PreviousContacts.js";
+import { createServer } from "http";
+import { Server } from "socket.io";
 
-try {
-  await mongoose.connect(process.env.MONGO_URI);
-  console.log(" ✅ Conectado com sucesso");
-} catch (err) {
-  console.log("Erro ao conectar: ", err);
-}
+const port = 3000;
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const app = express();
 
-async function startClientsSessions() {
-  //   try {
-  //     const clients = await Client.find();
-  //   } catch (err) {
-  //     console.log("Erro buscando no banco: ", err);
-  //   }
+// app.set("views", "views");
+app.set("view engine", "ejs");
+app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-  const clients = await Client.find();
-  clients.forEach((client) => {
-    create({
-      session: client.clientId,
-      puppeteerOptions: {
-        headless: true,
-        args: [
-          "--no-sandbox",
-          `--user-data-dir=./tokens/${client.clientId}/chrome-profile  `,
-        ],
-      },
-      catchQR: async (base64Qr, attempts) => {
-        await Client.updateOne(
-          { clientId: client.clientId },
-          { qrCode: base64Qr }
-        );
-      },
-    }).then((client) => {
-      client.onMessage(async (message) => {
-        // Lógica da mensagem
+app.use(
+  session({
+    secret: "segredo",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
 
-        if (message.isGroupMsg || !message.body) return;
-        const gptMessage = await generateAnswer(message.body);
-        client.sendText(message.from, gptMessage);
-        console.log(message);
-      });
-    });
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use("/", router);
+
+const clientes = await Clients.findAll({ raw: "true" });
+
+// clientController.startClientSession(clientes);
+
+const server = createServer(app);
+export const io = new Server(server);
+
+io.on("connection", (socket) => {
+  console.log("Novo cliente conectado:", socket.id);
+
+  socket.on("disconnect", () => {
+    console.log("Cliente desconectado:", socket.id);
   });
-}
 
-startClientsSessions();
+  // Exemplo: Enviar uma mensagem quando alguém se conecta
+  socket.emit("mensagem", "Bem-vindo ao servidor WebSocket!");
+});
+
+dataBase.sync().then(() => {
+  console.log("DB Sincronizado");
+  server.listen(port, (err) => {
+    if (err) {
+      return console.log("Erro conectando ao servidor");
+    }
+    console.log(`Servidor rodando na porta ${port}`);
+  });
+});
