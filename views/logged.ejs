@@ -154,45 +154,76 @@
 
     // Modal Area
     <dialog id="modal">
+      <h2>Gerador de Prompt</h2>
       <form action="/promptGenerate" method="post" id="form">
-        <label for="company_name">Nome empresa:</label>
-        <input
-          type="text"
-          name="company_name"
-          id="company_name"
-          placeholder="Nome da empresa"
-        />
-        <label for="segment">Ramo de atuação</label>
-        <input
-          type="text"
-          name="segment"
-          id="segment"
-          placeholder="Digite o ramo da empresa"
-        />
-        <label for="tone">Tom das Respostas</label>
-        <select name="tone" id="tone">
-          <option value="formal">Formal</option>
-          <option value="informal">Informal</option>
-          <option value="profissional">Profissional</option>
-          <option value="amigável">Amigável</option>
-          <option value="empático">Empático</option>
-          <option value="educado">Educado</option>
-        </select>
-
-        <label for="type_service">Tipo de Atendimento</label>
-        <input
-          type="text"
-          name="type_service"
-          placeholder="Ex: Suporte, Vendas. etc..."
-        />
-        <label for="faq">Perguntas Frequentes</label>
-        <input type="text" name="faq" id="faq" placeholder="" />
-        <label for="time">Horarios de funcionamento</label>
-        <input type="text" name="time" />
+        <div class="inputs">
+          <div>
+            <label for="company_name">Nome empresa:</label>
+            <input
+              required
+              type="text"
+              name="company_name"
+              id="company_name"
+              placeholder="Nome da empresa"
+            />
+          </div>
+          <div>
+            <label for="segment">Ramo de atuação</label>
+            <input
+              required
+              type="text"
+              name="segment"
+              id="segment"
+              placeholder="Digite o ramo da empresa"
+            />
+          </div>
+          <div>
+            <label for="tone">Tom das Respostas</label>
+            <select name="tone" id="tone" required>
+              <option value="Selecione o tom" selected>Selecione um tom</option>
+              <option value="formal">Formal</option>
+              <option value="informal">Informal</option>
+              <option value="profissional">Profissional</option>
+              <option value="amigável">Amigável</option>
+              <option value="empático">Empático</option>
+              <option value="educado">Educado</option>
+            </select>
+          </div>
+          <div>
+            <label for="type_service">Tipo de Atendimento</label>
+            <input
+              required
+              type="text"
+              name="type_service"
+              placeholder="Ex: Suporte, Vendas. etc..."
+            />
+          </div>
+          <div>
+            <label for="faq">Perguntas Frequentes</label>
+            <input
+              type="text"
+              name="faq"
+              id="faq"
+              placeholder="Coloque aqui as perguntas mais comuns"
+              required
+            />
+          </div>
+          <div>
+            <label for="time">Horarios de funcionamento</label>
+            <input
+              type="text"
+              name="time"
+              placeholder="Coloque seus horários de atendimento"
+              required
+            />
+          </div>
+        </div>
 
         <div class="buttons">
-          <input type="submit" value="Gerar Prompt" />
-          <input type="button" value="fechar" id="botaoFechar" />
+          <button type="submit" class="btn-confirm">Gerar Prompt</button>
+          <button type="button" id="botaoFechar" class="btn-cancel">
+            Fechar janela
+          </button>
         </div>
       </form>
 
