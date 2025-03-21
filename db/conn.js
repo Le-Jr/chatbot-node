@@ -7,5 +7,5 @@ export const dataBase = new Sequelize(db.host, db.user, db.password, {
   host: "localhost",
   dialect: "mysql",
   storage: ":memory:",
-  port: "3333",
+  
 });

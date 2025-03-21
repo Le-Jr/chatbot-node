@@ -4,6 +4,7 @@ const progressContainer = document.querySelector(".progressContainer");
 const progressWarning = document.querySelector(".progressWarning");
 const expiredMessage = document.querySelector(".expiredMessage");
 const regenerateButton = document.getElementById("regenerateButton");
+const closeQrDiv = document.querySelector("#close-qr-div")
 
 window.addEventListener("load", () => {
   if (sessionStorage.getItem("regenerateSession") === "true") {
@@ -113,6 +114,10 @@ async function createQrCode() {
   });
   //vocÊ recebera aqui caso o qr seja lido
   socket.on("message", (message) => {
-    console.log(message);
+    if(message==="usuário escaneou o qr code"){
+      showSucess("Device conectado!")
+      closeQrDiv.click()
+      socket.close()
+    }
   });
 }

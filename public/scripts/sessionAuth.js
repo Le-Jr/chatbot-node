@@ -59,7 +59,7 @@ function confirmAction() {
     })
       .then((response) => {
         closeModal();
-        showSucess();
+        showSucess( "Prompt atualizado com sucesso!");
         if (!response.ok) {
           throw new Error("Erro na requisição");
         }
@@ -90,7 +90,7 @@ function confirmAction() {
       //})
       .then((response) => {
         closeModal();
-        showSucess();
+        showSucess("Faq atualizado com sucesso!");
         if (!response.ok) {
           throw new Error("Erro na requisição");
         }
