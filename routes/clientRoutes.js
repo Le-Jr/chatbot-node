@@ -13,6 +13,7 @@ router.post("/login", ServerController.loginUser);
 
 router.post("/promptUpdate/:id", ServerController.updatePromptUser);
 router.post("/faqUpdate/:id", ServerController.updateFaqUser);
+router.post("/promptGenerate", ServerController.generatePrompt);
 
 router.get("/session", (req, res) => {
   res.json(req.user || { message: "Nenhum usuário logado!" });
@@ -29,15 +30,14 @@ router.get(
 );
 
 // Rotas Autenticação
-router.get("/user/:id/:wtj",ServerController.authClient, ServerController.loggedClient);
+router.get(
+  "/user/:id/:wtj",
+  ServerController.authClient,
+  ServerController.loggedClient
+);
 router.post("/user/:id/:wtj", ServerController.getClient);
 router.post(
   "/user/:id/:wtj/createSession",
   clientController.startClientSession
 );
-router.post(
-  "/user/:id/:wtj/logout",
-  clientController.logoutSession
-);
-
-
+router.post("/user/:id/:wtj/logout", clientController.logoutSession);

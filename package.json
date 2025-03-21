@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@wppconnect-team/wppconnect": "^1.35.2",
+    "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
     "dotenv": "^16.4.7",
@@ -26,6 +27,7 @@
     "passport": "^0.7.0",
     "passport-google-oauth2": "^0.2.0",
     "sequelize": "^6.37.5",
+    "socket.io": "^4.8.1",
     "sql": "^0.78.0"
   }
 }
