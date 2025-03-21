@@ -1,20 +1,11 @@
-import mysql from "mysql"
-import "dotenv/config"
-import { Sequelize } from "sequelize"
-var db = JSON.parse(process.env["db"])
+import mysql from "mysql";
+import "dotenv/config";
+import { Sequelize } from "sequelize";
+var db = JSON.parse(process.env["db"]);
 
-
-
-export const dataBase = new Sequelize(
-    db.host,
-    db.user,
-    db.password, 
-    {
-        host: 'localhost',
-        dialect: 'mysql',
-        storage: ':memory:'
-    }
-)
-
-
-
+export const dataBase = new Sequelize(db.host, db.user, db.password, {
+  host: "localhost",
+  dialect: "mysql",
+  storage: ":memory:",
+  port: "3333",
+});

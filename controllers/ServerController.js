@@ -5,6 +5,9 @@ import { clientController } from "./clientController.js";
 import { Wjt } from "../models/Wtj.js";
 import "../config/googleAuth.js";
 import passport from "passport";
+import axios from "axios";
+import "dotenv";
+import { OpenAI } from "openai";
 
 export class ServerController {
   static async initialPage(req, res) {
@@ -119,13 +122,11 @@ export class ServerController {
       res.json(false);
     }
   }
-  static async authClient(req,res,next){
+  static async authClient(req, res, next) {
     const user = {
-
-      id:req.params.id,
-      token:req.params.wtj
-
-    }
+      id: req.params.id,
+      token: req.params.wtj,
+    };
     const teste = await Wjt.findOne({
       where: {
         clientId: user.id,
@@ -135,11 +136,10 @@ export class ServerController {
 
     if (teste) {
       const currentUser = await Clients.findOne({ where: { id: user.id } });
-      next()
+      next();
     } else {
-      res.status(401).send()
+      res.status(401).send();
     }
-
   }
   static googleAuth = passport.authenticate("google", {
     scope: ["email", "profile"],
@@ -170,6 +170,53 @@ export class ServerController {
     } catch (err) {
       console.error("Erro no callback do Google: ", err);
       res.status(500).send("Erro na autenticação com o google 🤒");
+    }
+  }
+
+  static async generatePrompt(req, res) {
+    console.log("Corpo do form: ", req.body);
+
+    const { company_name, segment, tone, type_service, faq, time } = req.body;
+
+    const prompt = `
+    Você é um assistente virtual da empresa "Doce & Cia", que atua no ramo de Confeitaria. O objetivo do assistente é fornecer um atendimento de qualidade, eficiente e amigável para os clientes.
+
+**Informações importantes para o assistente:**
+- **Nome da empresa:** ${company_name}
+- **Ramo de atuação:** ${segment}
+- **Tom:** ${tone}
+- **Tipo de atendimento:** ${type_service}
+- **FAQ:** ${faq}
+- **Horário de funcionamento:** ${time}
+
+O assistente deve seguir o tom escolhido e fornecer respostas claras e úteis sobre os produtos, serviços e dúvidas comuns. A comunicação deve ser amigável e eficiente. 
+
+### Instruções:
+Em vez de simplesmente fornecer uma resposta como se fosse uma conversa, você deve gerar um **prompt para um assistente de IA** que pode ser utilizado para simular o atendimento ao cliente dessa empresa. O prompt gerado deve ser focado em simular um atendimento, considerando o perfil da empresa, tom e as informações fornecidas. 
+
+Exemplo de como o assistente pode responder:
+"Olá! Bem-vindo! Como posso te ajudar hoje? Fique à vontade para perguntar sobre nossos serviços ou produtos, e farei o meu melhor para te ajudar a encontrar o que você procura."
+
+
+Seu objetivo é sempre gerar prompts com base nas informações fornecidas, que simulem um atendimento amigável e eficiente.`;
+
+    try {
+      const response = await axios.post(
+        "https://api.openai.com/v1/chat/completions",
+        {
+          model: "gpt-4o",
+          messages: [{ role: "user", content: prompt }],
+          temperature: 0.7,
+        },
+        {
+          headers: { Authorization: `Bearer ${process.env.OPEN_AI_KEY}` },
+        }
+      );
+
+      const promptGerado = response.data.choices[0].message.content;
+      res.json({ prompt: promptGerado });
+    } catch (err) {
+      console.error("Erro ao processar a resposta: ", err);
     }
   }
 }
