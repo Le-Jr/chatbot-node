@@ -130,13 +130,17 @@ export class clientController {
 
   static async sendMessage(message, client, clientInfos, phoneNumber) {
     if (!message.from.includes("status") && !message.isGroupMsg) {
+
+      const user = await Clients.findOne({where:{id:clientInfos.id}})
       const isPreviousContact = await this.isPreviousContact(
         clientInfos.id,
         phoneNumber
       );
       if (isPreviousContact) {
         const responseChunks = await generateAnswer(
-          `${clientInfos.config}. lembre-se de responder o mais naturalmente possível, humanos não costumam comprimentar ou se despedir em toda interação, evite o uso de listas, adote um formato de escrita com um padrão mais cotidiâno. a seguir temos o contexto da conversa que você já teve: /${phoneNumber}:${message.body} `,
+          `${user.config}. lembre-se de responder o mais naturalmente possível, humanos não costumam
+           comprimentar ou se despedir em toda interação, evite o uso de listas, adote um formato de escrita com um padrão mais cotidiâno. 
+           a seguir temos o contexto da conversa que você já teve: /${isPreviousContact.context} / ${phoneNumber}:${message.body} `,
           (chunk) => {
             console.log("Bot:", chunk);
             return chunk;
