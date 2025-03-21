@@ -85,10 +85,10 @@ function openQrCode() {
   document.getElementById("qrCodeModal").style.display = "flex";
 }
 
-function showSucess() {
+function showSucess(tipoAcao) {
   success.style.display = "block";
   regress.style.display = "block";
-  success.innerHTML = `<span class="sucess-text">O ${actionType} foi alterado com sucesso!</span>`;
+  success.innerHTML = `<span class="sucess-text"> ${tipoAcao}</span>`;
   regress.style.animation = "regress 5s linear forwards";
   setTimeout(() => {
     success.style.display = "none";
