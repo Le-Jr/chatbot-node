@@ -44,17 +44,6 @@ const clientes = await Clients.findAll({ raw: "true" });
 const server = createServer(app);
 export const io = new Server(server);
 
-io.on("connection", (socket) => {
-  console.log("Novo cliente conectado:", socket.id);
-
-  socket.on("disconnect", () => {
-    console.log("Cliente desconectado:", socket.id);
-  });
-
-  // Exemplo: Enviar uma mensagem quando alguém se conecta
-  socket.emit("mensagem", "Bem-vindo ao servidor WebSocket!");
-});
-
 dataBase.sync().then(() => {
   console.log("DB Sincronizado");
   server.listen(port, (err) => {
