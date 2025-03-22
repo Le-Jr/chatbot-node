@@ -224,7 +224,7 @@ textarea {
     width: 25vh;
     height: 25vh;
     position: relative;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     margin: auto;
@@ -343,9 +343,14 @@ textarea {
   display: none;  
   margin-top: 10px;
   padding: 10%;
+  font-weight: var(--font-semi-bold);
 }
 #regenerateButton{
     display: none;
+}
+.disabled{
+    background-color: var(--error-color);
+    color: var(--primary-color);
 }
 
 @media screen and (max-width: 1250px){

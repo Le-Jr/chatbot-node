@@ -23,6 +23,8 @@ function validateTextareasEmpty() {
 
   if (someEmpty) {
     console.log("Pelo menos um textarea está vazio.");
+    errorText = "Verifique se não deixou algum campo em branco";
+    showError();
     return false;
   } else {
     console.log("Todos os textareas estão preenchidos.");

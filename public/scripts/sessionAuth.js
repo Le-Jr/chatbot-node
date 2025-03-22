@@ -11,7 +11,10 @@ const updatePromptButton = document.querySelector(".updatePromptButton");
 let faqInput = document.querySelector(".faqInput");
 const updateFaqButton = document.querySelector(".updateFaqButton");
 
-let controlButtonSession = document.querySelector('.newSessionButton')
+let controlButtonSession = document.querySelector(".newSessionButton");
+let mercurio = controlButtonSession.querySelector("img");
+let iniciaSessao = document.querySelector(".inicia-sessao");
+let textSessao = iniciaSessao.querySelector("h2");
 
 localStorage.setItem("mercurioChatUser", JSON.stringify(user));
 
@@ -37,8 +40,12 @@ fetch(`/user/${user.id}/${user.token}`, {
     if (currentUser.faq != undefined) {
       faqInput.value = data.currentUser.faq;
     }
-    if(currentUser.isActiveSession){
-      controlButtonSession.textContent = "fechar seção"
+    if (currentUser.isActiveSession) {
+      controlButtonSession.classList.add("disabled");
+      mercurio.style.border = "none";
+      mercurio.src = "/assets/mercurioWhite.svg";
+      textSessao.style.color = "var(--error-color)";
+      textSessao.textContent = "Encerrar MercurioChat";
     }
   })
   .catch((error) => {
@@ -59,7 +66,7 @@ function confirmAction() {
     })
       .then((response) => {
         closeModal();
-        showSucess( "Prompt atualizado com sucesso!");
+        showSucess("Prompt atualizado com sucesso!");
         if (!response.ok) {
           throw new Error("Erro na requisição");
         }

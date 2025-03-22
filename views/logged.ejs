@@ -105,7 +105,7 @@
           <div class="progressBar"></div>
         </div>
         <div class="qrCodeDiv"></div>
-        <div class="expiredMessage">Tem q gerar outro QR code paizão</div>
+        <div class="expiredMessage">Qr code expirado por favor gere outro</div>
           <div class="modal-buttons">
             <button class="btn-cancel" onclick="closeModal()" id="close-qr-div">Fechar</button>
             <button class="btn-confirm" id="regenerateButton">Gerar novo Qr Code</button>
@@ -124,6 +124,11 @@
     </div>
 
      <dialog id="modal">
+      <div class="loading" id="loading-gerar-prompt">
+        <span class="points"></span>
+        <span class="points"></span>
+        <span class="points"></span>
+      </div>
       <h2>Gerador de Prompt</h2>
       <form action="/promptGenerate" method="post" id="form">
         <div class="inputs">
@@ -190,7 +195,7 @@
         </div>
 
         <div class="buttons">
-          <button type="submit" class="btn-confirm">Gerar Prompt</button>
+          <button type="submit" class="btn-confirm" id="gerar-prompt">Gerar Prompt</button>
           <button type="button" id="botaoFechar" class="btn-cancel">
             Fechar janela
           </button>
