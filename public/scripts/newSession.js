@@ -6,7 +6,7 @@ const expiredMessage = document.querySelector(".expiredMessage");
 const regenerateButton = document.getElementById("regenerateButton");
 const closeQrDiv = document.querySelector("#close-qr-div");
 
-/*window.addEventListener("load", () => {
+window.addEventListener("load", () => {
   if (sessionStorage.getItem("regenerateSession") === "true") {
     sessionStorage.removeItem("regenerateSession");
     console.log("Regenerando sessão automaticamente");
@@ -17,7 +17,7 @@ const closeQrDiv = document.querySelector("#close-qr-div");
 regenerateButton.addEventListener("click", () => {
   sessionStorage.setItem("regenerateSession", "true");
   location.reload();
-});*/
+});
 
 buttonForNewSession.addEventListener("click", (event) => {
   event.preventDefault();
@@ -25,13 +25,13 @@ buttonForNewSession.addEventListener("click", (event) => {
   /*if (buttonForNewSession.disabled) {
     console.log("espera ae meu nobre");
     return;
-  }
+  }*/
 
   buttonForNewSession.disabled = true;
 
   setTimeout(() => {
     buttonForNewSession.disabled = false;
-  }, 61000);*/
+  }, 61000);
 
   validateTextareasEmpty();
   if (validateTextareasEmpty()) {
@@ -113,6 +113,7 @@ async function createQrCode() {
     if (message === "usuário escaneou o qr code") {
       showSucess("Device conectado!");
       closeQrDiv.click();
+      changeSessionButton("disabled");
       socket.close();
     }
   });

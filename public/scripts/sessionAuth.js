@@ -41,11 +41,7 @@ fetch(`/user/${user.id}/${user.token}`, {
       faqInput.value = data.currentUser.faq;
     }
     if (currentUser.isActiveSession) {
-      controlButtonSession.classList.add("disabled");
-      mercurio.style.border = "none";
-      mercurio.src = "/assets/mercurioWhite.svg";
-      textSessao.style.color = "var(--error-color)";
-      textSessao.textContent = "Encerrar MercurioChat";
+      changeSessionButton("disabled");
     }
   })
   .catch((error) => {
