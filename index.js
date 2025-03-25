@@ -28,7 +28,7 @@ app.use(
     secret: "segredo",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false },
+    cookie: { secure: true, sameSite: "none" },
   })
 );
 
