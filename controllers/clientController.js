@@ -77,10 +77,10 @@ export class clientController {
             });
 
 
-            createdSessions[currentUser.id] = client
-            Clients.update({ isActiveSession: 1 }, { where: { id: currentUser.id } })
-            const socket = io.sockets.sockets.get(req.body.wsId)
-            socket.emit("message", "usuário escaneou o qr code");
+            // createdSessions[currentUser.id] = client
+            // Clients.update({ isActiveSession: 1 }, { where: { id: currentUser.id } })
+            // const socket = io.sockets.sockets.get(req.body.wsId)
+            // socket.emit("message", "usuário escaneou o qr code");
 
           })
           .catch((error) => {
