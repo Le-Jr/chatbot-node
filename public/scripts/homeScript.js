@@ -45,7 +45,7 @@ function compareTextareas() {
       if (!response.ok) {
         throw new Error("Erro na requisição");
       }
-      return (currentUser = response.json());
+      return response.json()
     })
     .then((data) => {
       const currentUser = data.currentUser;
