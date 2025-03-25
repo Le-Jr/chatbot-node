@@ -48,12 +48,12 @@ function compareTextareas() {
       return response.json()
     })
     .then((data) => {
-      const currentUser = data.currentUser;
+      
       if (
-        currentUser.config != textareas[0].value ||
-        currentUser.faq != textareas[1].value
+        data.config != textareas[0].value ||
+        data.faq != textareas[1].value
       ) {
-        if (currentUser.config != textareas[0].value) {
+        if (data.config != textareas[0].value) {
           errorText = "Salve as alterações do Prompt antes de iniciar";
         } else {
           errorText =
