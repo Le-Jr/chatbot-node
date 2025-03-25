@@ -5,6 +5,7 @@ const success = document.querySelector(".success-message");
 const regress = document.querySelector(".regress-bar");
 const errorModal = document.querySelector(".error-message");
 const errorMessage = document.querySelector(".error-message");
+const closeMercurio = document.querySelector(".newSessionButton .disabled");
 
 let actionType;
 let errorText;
@@ -111,4 +112,19 @@ function showError() {
     errorModal.innerHTML = "";
     regress.style.animation = "";
   }, 5000);
+}
+
+function changeSessionButton(mode) {
+  if (mode == "enable") {
+    controlButtonSession.classList.remove("disabled");
+    mercurio.src = "/assets/mercurio.svg";
+    textSessao.style.color = "var(--title-color)";
+    textSessao.textContent = "Iniciar MercurioChat";
+  } else if (mode == "disabled") {
+    controlButtonSession.classList.add("disabled");
+    mercurio.style.border = "none";
+    mercurio.src = "/assets/mercurioWhite.svg";
+    textSessao.style.color = "var(--error-color)";
+    textSessao.textContent = "Encerrar MercurioChat";
+  }
 }
