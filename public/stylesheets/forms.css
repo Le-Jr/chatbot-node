@@ -4,7 +4,11 @@ body {
 
   @media screen and (max-width: 800px) {
     background-color: var(--primary-color);
-    display: block;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center; 
+    min-height: 100vh;
+    margin: 0;
   }
 }
 p {
@@ -17,6 +21,10 @@ form {
   align-items: center;
   padding: 1.5rem;
   height: 100vh;
+
+  @media screen and (max-width: 800px) {
+  width: 100%;
+  }
 }
 .form.create {
   height: 120vh;
@@ -24,7 +32,7 @@ form {
 input {
   background-color: var(--body-color);
   color: var(--text-color);
-  width: 50vh;
+  width: 25vw;
   height: 7.5vh;
   border: none;
   border-radius: 8px;
@@ -37,7 +45,7 @@ input[type="submit"] {
   background-color: var(--title-color);
   color: var(--primary-color);
   cursor: pointer;
-  width: 57.5vh;
+  width: calc(25vw + 7vh);
   display: block;
   text-align: center;
   justify-items: center;
@@ -93,7 +101,7 @@ input[type="submit"]:hover {
   border-radius: 8px;
   cursor: pointer;
   padding: 15px;
-  width: 57.5vh;
+  width: calc(25vw + 7vh);
   display: block;
   text-align: center;
   margin: 2vh;
@@ -119,6 +127,8 @@ input[type="submit"]:hover {
 }
 #logo-mercurio {
   height: 65vh;
+  width: 40vw;
+  
   @media screen and (max-width: 800px) {
     display: none;
   }
@@ -148,12 +158,6 @@ input[type="submit"]:hover {
   display: none;
 }
 
-@media screen and (max-width: 1250px) {
-  #logo-mercurio {
-    height: 45vh;
-    width: 45vh;
-  }
-}
 button {
   padding: 0;
   background: transparent;
@@ -164,4 +168,25 @@ button {
   padding: 1.5vh;
   background-color: var(--title-color);
   border-radius: 8px;
+}
+
+@media screen and (max-width: 1250px) {
+    input{
+      width: 50vw;
+    }
+    input[type="submit"],
+    .form-button{
+      width: calc(50vw + 7vh);
+    }
+    .logo-company{
+      margin-bottom: 1.5rem;
+    }
+
+    #logo-mercurio {
+      height: 45vh;
+      width: 50vw;
+    }
+    #brk_yuan{
+      display: none;
+  }
 }

@@ -354,5 +354,32 @@ textarea {
 }
 
 @media screen and (max-width: 1250px){
+    .newSessionButton img{
+        width: 28vw;
+        height: 20%;
+        padding: 1.5rem;
+        }
+    .textAreaPrompts{
+        gap: 3rem;
+    }
+    .inputContainer{
+        width: 60%;
+    }
+}
 
+@media screen and (max-width: 850px){
+    .inicia-sessao h2{
+        font-size: var(--normal-font-size);
+    }
+    .inicia-sessao{
+        width: 55%;
+    }
+    .inputContainer{
+        width: 90%;
+    }
+}
+@media screen and (max-width: 450px){
+    #help-prompt-button{
+        display: block;
+    }
 }

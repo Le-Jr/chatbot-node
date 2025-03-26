@@ -16,38 +16,51 @@ let mercurio = controlButtonSession.querySelector("img");
 let iniciaSessao = document.querySelector(".inicia-sessao");
 let textSessao = iniciaSessao.querySelector("h2");
 
+let fetchTimeout = null;
+
+const observedUser = new Proxy(user, {
+  set(target, property, value) {
+    console.log(`Alterando ${property} para ${value}`);
+    target[property] = value;
+    return true; // Permite a alteração sem disparar requisição automática
+  },
+});
+
 localStorage.setItem("mercurioChatUser", JSON.stringify(user));
 
-fetch(`/user/${user.id}/${user.token}`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify(user),
-})
-  .then((response) => {
+async function fetchUserData() {
+  try {
+    const response = await fetch(
+      `/user/${observedUser.id}/${observedUser.token}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(observedUser),
+      }
+    );
+
     if (!response.ok) {
       throw new Error("Erro na requisição");
     }
-    return (currentUser = response.json());
-  })
-  .then((data) => {
+
+    const data = await response.json();
     console.log("Resposta do servidor:", data);
     const currentUser = data.currentUser;
-    if (currentUser.config != undefined) {
-      promptInput.value = data.currentUser.config;
-    }
-    if (currentUser.faq != undefined) {
-      faqInput.value = data.currentUser.faq;
-    }
-    if (currentUser.isActiveSession) {
-      changeSessionButton("disabled");
-    }
-  })
-  .catch((error) => {
-    console.error("Erro ao fazer a requisição:", error);
-  });
 
+    if (currentUser.config !== undefined) {
+      observedUser.config = currentUser.config;
+      promptInput.value = currentUser.config;
+    }
+    if (currentUser.faq !== undefined) {
+      observedUser.faq = currentUser.faq;
+      faqInput.value = currentUser.faq;
+    }
+  } catch (error) {
+    console.error("Erro ao fazer a requisição:", error);
+  }
+}
 function confirmAction() {
   if (actionType == "Prompt") {
     //Prompt Update

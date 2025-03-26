@@ -7,6 +7,7 @@ const regenerateButton = document.getElementById("regenerateButton");
 const closeQrDiv = document.querySelector("#close-qr-div");
 
 window.addEventListener("load", () => {
+  fetchUserData();
   if (sessionStorage.getItem("regenerateSession") === "true") {
     sessionStorage.removeItem("regenerateSession");
     console.log("Regenerando sessão automaticamente");
@@ -15,28 +16,27 @@ window.addEventListener("load", () => {
 });
 
 regenerateButton.addEventListener("click", () => {
-  sessionStorage.setItem("regenerateSession", "true");
-  location.reload();
+  openQrCode();
+  createQrCode();
 });
 
-buttonForNewSession.addEventListener("click", (event) => {
+buttonForNewSession.addEventListener("click", async (event) => {
   event.preventDefault();
 
-  /*if (buttonForNewSession.disabled) {
-    console.log("espera ae meu nobre");
-    return;
-  }*/
-
-  buttonForNewSession.disabled = true;
-
-  setTimeout(() => {
-    buttonForNewSession.disabled = false;
-  }, 61000);
-
-  validateTextareasEmpty();
+  if (
+    buttonForNewSession.classList == "newSessionButton disabled" &&
+    observedUser.isActiveSession == false
+  ) {
+    changeSessionButton("enable");
+  }
   if (validateTextareasEmpty()) {
-    compareTextareas();
-    if (compareTextareas()) {
+    console.log("vou chamar hein");
+    await fetchUserData();
+    const resultado = compareTextareas();
+    console.log(observedUser.config + " teste");
+
+    if (resultado) {
+      console.log(resultado);
       openQrCode();
       createQrCode();
     }
@@ -67,7 +67,6 @@ async function createQrCode() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(user),
-      //signal,
     })
       .then((response) => {
         console.log(" Resposta recebida:", response);
