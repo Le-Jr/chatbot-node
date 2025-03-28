@@ -55,7 +55,7 @@ async function createQrCode() {
     loadingText.style.display = "flex";
   }
 
-  const socket = await io("https://client.mercuriochat.com.br");
+  const socket = await io("http://localHost:3000");
 
   socket.on("connect", (data) => {
     user.wsId = socket.id;
