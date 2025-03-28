@@ -25,6 +25,9 @@ export class clientController {
             id: req.body.id,
           },
         });
+        if(req.body.isPersistentSession==true){
+          createdSessions[req.body.id].start()
+        }
 
         let currentSession = await create({
           session: `whatsapp_bot_${currentUser.id}`,
