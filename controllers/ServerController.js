@@ -179,7 +179,7 @@ export class ServerController {
     const { company_name, segment, tone, type_service, faq, time } = req.body;
 
     const prompt = `
-    Você é um assistente virtual da empresa "Doce & Cia", que atua no ramo de Confeitaria. O objetivo do assistente é fornecer um atendimento de qualidade, eficiente e amigável para os clientes.
+    Você é um assistente virtual da empresa ${company_name}, que atua no ramo de ${segment}. O objetivo do assistente é fornecer um atendimento de qualidade, eficiente e amigável para os clientes.
 
 **Informações importantes para o assistente:**
 - **Nome da empresa:** ${company_name}

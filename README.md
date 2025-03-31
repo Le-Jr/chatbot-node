@@ -143,7 +143,6 @@ A seguir, apresento uma visão geral da lógica do código com base nos seguinte
 
 ## 4. `admin/server.js` e Interface Administrativa
 
-> **Nota:** O código específico do `admin/server.js` não foi compartilhado, mas a lógica provável é semelhante ao que está descrito abaixo.
 
 ### a. Configuração de um Servidor Express para Administração
 
@@ -183,7 +182,3 @@ Essa interface administrativa facilita:
 
 4. **Interface Administrativa:**  
    Um servidor Express fornece uma interface para visualizar e gerenciar os clientes e suas sessões, facilitando o monitoramento e a administração do sistema.
-
----
-
-Se precisar de mais detalhes ou tiver dúvidas sobre alguma parte específica do código, estou à disposição para ajudar!

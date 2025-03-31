@@ -9,7 +9,6 @@ let createdSessions = {}
 
 export class clientController {
   static async startClientSession(req, res) {
-    console.log(req.body)
     try {
       const auth = await Wjt.findOne({
         where: {
@@ -21,6 +20,7 @@ export class clientController {
 
       if (auth) {
         const currentUser = await Clients.findOne({
+          raw: true,
           where: {
             id: req.body.id,
           },
@@ -78,6 +78,10 @@ export class clientController {
 
 
             createdSessions[currentUser.id] = client
+            Clients.update({ isActiveSession: 1 }, { where: { id: currentUser.id } })
+            const socket = io.sockets.sockets.get(req.body.wsId)
+            socket.emit("message", "usuário escaneou o qr code");
+
           })
           .catch((error) => {
             console.error("Error creating client:", error);
@@ -86,9 +90,7 @@ export class clientController {
               .json({ error: "Failed to initialize WhatsApp client" });
           });
 
-        Clients.update({ isActiveSession: 1 }, { where: { id: currentUser.id } })
-        const socket = io.sockets.sockets.get(req.body.wsId)
-        socket.emit("message", "usuário escaneou o qr code");
+
 
       }
     } catch (err) {
@@ -121,7 +123,6 @@ export class clientController {
         clientId: client,
       },
     });
-    console.log(isContact);
     if (isContact.length > 0) {
       return isContact[0];
     }
@@ -137,12 +138,13 @@ export class clientController {
         phoneNumber
       );
       if (isPreviousContact) {
+        console.log(clientInfos.config,phoneNumber,message.body)
         const responseChunks = await generateAnswer(
           `${user.config}. lembre-se de responder o mais naturalmente possível, humanos não costumam
            comprimentar ou se despedir em toda interação, evite o uso de listas, adote um formato de escrita com um padrão mais cotidiâno. 
            a seguir temos o contexto da conversa que você já teve: /${isPreviousContact.context} / ${phoneNumber}:${message.body} `,
+
           (chunk) => {
-            console.log("Bot:", chunk);
             return chunk;
           }
         );
@@ -157,7 +159,6 @@ export class clientController {
         await PreviousContacts.update(
           {
             phoneNumber: phoneNumber,
-            clientId: clientInfos.id,
             context: updatedContext,
             // context: `${isPreviousContact.context}\n ${phoneNumber}:${message.body}\n chatgpt:${gptMessage}\n`,
           },
@@ -173,7 +174,7 @@ export class clientController {
           await new Promise(
             (resolve) =>
               setTimeout(() => {
-                client.sendText(message.from, chunk); // Envia cada parte separada
+                client.sendText(phoneNumber, chunk); // Envia cada parte separada
                 resolve(); // Resolve a promise após o envio
               }, index * 1000 + 500) // Incrementa o atraso para garantir a ordem
           );
@@ -185,7 +186,7 @@ export class clientController {
           phoneNumber: phoneNumber,
           clientId: clientInfos.id,
         });
-        client.sendText(message.from, clientInfos.faq);
+        client.sendText(phoneNumber, clientInfos.faq);
       }
     } else {
       console.log("é status");

@@ -28,7 +28,7 @@
     <main>
       <div class="inicia-sessao">
         <p class="div-title">Iniciar sessão</p>
-        <button class="newSessionButton">
+        <button class="newSessionButton" id="newSessionButton">
           <img src="/assets/mercurio.svg" alt="">
 
         </button>
@@ -105,7 +105,7 @@
           <div class="progressBar"></div>
         </div>
         <div class="qrCodeDiv"></div>
-        <div class="expiredMessage">Tem q gerar outro QR code paizão</div>
+        <div class="expiredMessage">Qr code expirado por favor gere outro</div>
           <div class="modal-buttons">
             <button class="btn-cancel" onclick="closeModal()" id="close-qr-div">Fechar</button>
             <button class="btn-confirm" id="regenerateButton">Gerar novo Qr Code</button>
@@ -124,6 +124,16 @@
     </div>
 
      <dialog id="modal">
+      <button id="closeModalPrompt" class="close-button">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#555555">
+          <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+        </svg>
+      </button>
+      <div class="loading" id="loading-gerar-prompt">
+        <span class="points"></span>
+        <span class="points"></span>
+        <span class="points"></span>
+      </div>
       <h2>Gerador de Prompt</h2>
       <form action="/promptGenerate" method="post" id="form">
         <div class="inputs">
@@ -190,8 +200,8 @@
         </div>
 
         <div class="buttons">
-          <button type="submit" class="btn-confirm">Gerar Prompt</button>
-          <button type="button" id="botaoFechar" class="btn-cancel">
+          <button type="submit" class="btn-confirm" id="gerar-prompt">Gerar Prompt</button>
+          <button type="button" id="closeModalPrompt" class="btn-cancel">
             Fechar janela
           </button>
         </div>

@@ -4,7 +4,7 @@ const progressContainer = document.querySelector(".progressContainer");
 const progressWarning = document.querySelector(".progressWarning");
 const expiredMessage = document.querySelector(".expiredMessage");
 const regenerateButton = document.getElementById("regenerateButton");
-const closeQrDiv = document.querySelector("#close-qr-div")
+const closeQrDiv = document.querySelector("#close-qr-div");
 
 window.addEventListener("load", () => {
   if (sessionStorage.getItem("regenerateSession") === "true") {
@@ -25,13 +25,13 @@ buttonForNewSession.addEventListener("click", (event) => {
   /*if (buttonForNewSession.disabled) {
     console.log("espera ae meu nobre");
     return;
-  }
+  }*/
 
   buttonForNewSession.disabled = true;
 
   setTimeout(() => {
     buttonForNewSession.disabled = false;
-  }, 61000);*/
+  }, 61000);
 
   validateTextareasEmpty();
   if (validateTextareasEmpty()) {
@@ -40,11 +40,6 @@ buttonForNewSession.addEventListener("click", (event) => {
       openQrCode();
       createQrCode();
     }
-  } else {
-    setTimeout(() => {
-      errorMessage.style.display = "block";
-      errorMessage.innerHTML = `<span class="sucess-text">Verifique se não deixou algum campo em branco</span>`;
-    }, 3000);
   }
 });
 
@@ -60,7 +55,7 @@ async function createQrCode() {
     loadingText.style.display = "flex";
   }
 
-  const socket = await io("http://localhost:3000");
+  const socket = await io("http://localHost:3000");
 
   socket.on("connect", (data) => {
     user.wsId = socket.id;
@@ -99,6 +94,7 @@ async function createQrCode() {
 
         setTimeout(() => {
           qrCode.innerHTML = "";
+          qrCode.style.display = "none";
           if (expiredMessage) expiredMessage.style.display = "block";
           if (regenerateButton) regenerateButton.style.display = "block";
         }, 60000);
@@ -114,10 +110,11 @@ async function createQrCode() {
   });
   //vocÊ recebera aqui caso o qr seja lido
   socket.on("message", (message) => {
-    if(message==="usuário escaneou o qr code"){
-      showSucess("Device conectado!")
-      closeQrDiv.click()
-      socket.close()
+    if (message === "usuário escaneou o qr code") {
+      showSucess("Device conectado!");
+      closeQrDiv.click();
+      changeSessionButton("disabled");
+      socket.close();
     }
   });
 }
