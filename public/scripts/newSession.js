@@ -26,11 +26,12 @@ buttonForNewSession.addEventListener("click", (event) => {
   if (validateTextareasEmpty()) {
     compareTextareas();
     if (compareTextareas() && !buttonForNewSession.classList.contains("disabled") && isPersistentSession != "true") {
-      
+      console.log("não está true")
       openQrCode();
       createQrCode();
     }
     else if (isPersistentSession && compareTextareas() && !buttonForNewSession.classList.contains("disabled")) {
+      console.log("esta true")
       user.isPersistentSession=true
       fetch(`/user/${user.id}/${user.token}/createSession`, {
         method: "POST",
