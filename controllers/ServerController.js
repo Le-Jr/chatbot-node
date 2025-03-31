@@ -105,6 +105,7 @@ export class ServerController {
     // await clientController.startClientSession(res,{currentUser})
   }
   static async loggedClient(req, res) {
+    console.log("loguei?")
     res.render("logged");
   }
   static async getClient(req, res) {
@@ -127,15 +128,14 @@ export class ServerController {
       id: req.params.id,
       token: req.params.wtj,
     };
-    const teste = await Wjt.findOne({
+    const auth = await Wjt.findOne({
       where: {
         clientId: user.id,
         wtjId: user.token,
       },
     });
 
-    if (teste) {
-      const currentUser = await Clients.findOne({ where: { id: user.id } });
+    if (auth) {
       next();
     } else {
       res.status(401).send();

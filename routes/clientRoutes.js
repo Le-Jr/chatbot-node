@@ -3,6 +3,7 @@ export const router = express.Router();
 import { ServerController } from "../controllers/ServerController.js";
 import { clientController } from "../controllers/clientController.js";
 import passport from "passport";
+import { plansController } from "../controllers/plansController.js";
 
 router.get("/register", ServerController.registerPage);
 router.post("/register", ServerController.createUser);
@@ -33,6 +34,7 @@ router.get(
 router.get(
   "/user/:id/:wtj",
   ServerController.authClient,
+  plansController.hasActivePlan,
   ServerController.loggedClient
 );
 router.post("/user/:id/:wtj", ServerController.getClient);
@@ -41,3 +43,8 @@ router.post(
   clientController.startClientSession
 );
 router.post("/user/:id/:wtj/logout", clientController.logoutSession);
+router.get("/user/:id/:wtj/buy", plansController.renderPlans)
+router.post(
+  "/user/:id/:serviceId/pay",
+  plansController.PaymentWebhookHandler
+);

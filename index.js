@@ -10,8 +10,11 @@ import passport from "./config/googleAuth.js";
 import session from "express-session";
 import { Clients } from "./models/Clients.js";
 import { PreviousContacts } from "./models/PreviousContacts.js";
-import { createServer } from "http";
+import { createServer, ServerResponse } from "http";
 import { Server } from "socket.io";
+import { ServicePlans } from "./models/ServicePlans.js";
+import { ClientsPlans } from "./models/ClientsPlans.js";
+
 
 const port = 3000;
 const __dirname = dirname(fileURLToPath(import.meta.url));

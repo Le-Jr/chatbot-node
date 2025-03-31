@@ -13,7 +13,6 @@ form.addEventListener("submit", (event) => {
       form.submit();
     }
   } else {
-    console.log("entrei no else certo");
     emailValidate();
     passwordValidate();
     passwordComparation();
@@ -24,7 +23,6 @@ form.addEventListener("submit", (event) => {
       passwordValidate() &&
       nameValidate()
     ) {
-      console.log("entrei no if certo");
       form.submit();
     }
   }
