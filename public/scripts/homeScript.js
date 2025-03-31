@@ -33,6 +33,7 @@ function validateTextareasEmpty() {
 }
 
 function compareTextareas() {
+<<<<<<< HEAD
   if (
     observedUser.config !== textareas[0].value ||
     observedUser.faq !== textareas[1].value
@@ -47,6 +48,41 @@ function compareTextareas() {
     return false;
   }
   return true;
+=======
+  return fetch(`/user/${user.id}/${user.token}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(user),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Erro na requisição");
+      }
+      return response.json()
+    })
+    .then((data) => {
+      const currentUser = data.currentUser;
+      if (
+        currentUser.config != textareas[0].value ||
+        currentUser.faq != textareas[1].value
+      ) {
+        if (currentUser.config != textareas[0].value) {
+          errorText = "Salve as alterações do Prompt antes de iniciar";
+        } else {
+          errorText =
+            "Salve as alterações da mensagem inicial antes de iniciar";
+        }
+        showError();
+        return false;
+      }
+      return true;
+    })
+    .catch((error) => {
+      console.error("Erro ao fazer a requisição:", error);
+    });
+>>>>>>> 254246f85e3a8c30159084704b20600e047cfd10
 }
 
 function openModal(type) {

@@ -5,6 +5,7 @@ const progressWarning = document.querySelector(".progressWarning");
 const expiredMessage = document.querySelector(".expiredMessage");
 const regenerateButton = document.getElementById("regenerateButton");
 const closeQrDiv = document.querySelector("#close-qr-div");
+let isPersistentSession = localStorage.getItem("isPersistentSession")
 
 window.addEventListener("load", () => {
   fetchUserData();
@@ -22,6 +23,7 @@ regenerateButton.addEventListener("click", () => {
 
 buttonForNewSession.addEventListener("click", async (event) => {
   event.preventDefault();
+<<<<<<< HEAD
 
   if (
     buttonForNewSession.classList == "newSessionButton disabled" &&
@@ -37,8 +39,56 @@ buttonForNewSession.addEventListener("click", async (event) => {
 
     if (resultado) {
       console.log(resultado);
+=======
+  validateTextareasEmpty();
+  if (validateTextareasEmpty()) {
+    compareTextareas();
+    if (compareTextareas() && !buttonForNewSession.classList.contains("disabled") && isPersistentSession != "true") {
+      console.log("não está true")
+>>>>>>> 254246f85e3a8c30159084704b20600e047cfd10
       openQrCode();
       createQrCode();
+    }
+    else if (isPersistentSession && compareTextareas() && !buttonForNewSession.classList.contains("disabled")) {
+      console.log("esta true")
+      user.isPersistentSession=true
+      fetch(`/user/${user.id}/${user.token}/createSession`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+        //signal,
+      })
+        .then((response) => {
+
+          return response.json();
+        }).catch((error) => {
+          console.log(error)
+        })
+        changeSessionButton("disabled");
+        showSucess("Device reconectado!");
+
+
+    }
+    else {
+      fetch(`/user/${user.id}/${user.token}/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+        //signal,
+      })
+        .then((response) => {
+          return response.json()
+
+        }
+        ).catch((error) => {
+          return console.log(error)
+        }
+        )
+      changeSessionButton("enable");
     }
   }
 });
@@ -55,7 +105,7 @@ async function createQrCode() {
     loadingText.style.display = "flex";
   }
 
-  const socket = await io("https://client.mercuriochat.com.br");
+  const socket = await io("http://localHost:3000");
 
   socket.on("connect", (data) => {
     user.wsId = socket.id;
@@ -113,6 +163,8 @@ async function createQrCode() {
       showSucess("Device conectado!");
       closeQrDiv.click();
       changeSessionButton("disabled");
+      localStorage.setItem("isPersistentSession", "true")
+      isPersistentSession=localStorage.isPersistentSession
       socket.close();
     }
   });

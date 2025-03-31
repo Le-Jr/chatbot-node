@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 300px;
+        }
+
+        .card h2 {
+            margin: 0;
+            color: #333;
+        }
+
+        .card p {
+            margin: 10px 0;
+            color: #666;
+        }
+
+        .card input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .card button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .card button:hover {
+            background-color: #218838;
+        }
+    </style>
+    <title>Document</title>
+</head>
+
+<body>
+    <%plans.forEach((plan)=>{ %>
+        <div class="card">
+            <h2>Plano: <%=plan.name%>
+            </h2>
+            <p><strong>Duração:</strong>
+                <%=plan.days%> dias
+            </p>
+            <p><strong>Preço:</strong> R$ <%=plan.price%>
+            </p>
+            <button class="buyButton" data-plan=<%=plan.id%>>Assinar</button>
+        </div>
+        <% console.log(plan) }) %>
+</body>
+<script src="/scripts/purchaseLogic.js"></script>
+</html>
