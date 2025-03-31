@@ -6,7 +6,6 @@ const gerarPrompt = document.getElementById("gerar-prompt");
 const loadingPrompt = document.getElementById("loading-gerar-prompt");
 
 button.addEventListener("click", (e) => {
-  console.log("Cliquei aqui");
   modal.showModal();
 });
 

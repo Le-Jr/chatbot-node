@@ -25,6 +25,9 @@ export class clientController {
             id: req.body.id,
           },
         });
+        if (req.body.isPersistentSession == true) {
+          createdSessions[req.body.id].start()
+        }
 
         let currentSession = await create({
           session: `whatsapp_bot_${currentUser.id}`,
@@ -79,8 +82,10 @@ export class clientController {
 
             createdSessions[currentUser.id] = client
             Clients.update({ isActiveSession: 1 }, { where: { id: currentUser.id } })
-            const socket = io.sockets.sockets.get(req.body.wsId)
-            socket.emit("message", "usuário escaneou o qr code");
+            if (req.body.isPersistentSession != true) {
+              const socket = io.sockets.sockets.get(req.body.wsId)
+              socket.emit("message", "usuário escaneou o qr code");
+            }
 
           })
           .catch((error) => {
@@ -138,7 +143,7 @@ export class clientController {
         phoneNumber
       );
       if (isPreviousContact) {
-        console.log(clientInfos.config,phoneNumber,message.body)
+        console.log(clientInfos.config, phoneNumber, message.body)
         const responseChunks = await generateAnswer(
           `${user.config}. lembre-se de responder o mais naturalmente possível, humanos não costumam
            comprimentar ou se despedir em toda interação, evite o uso de listas, adote um formato de escrita com um padrão mais cotidiâno. 

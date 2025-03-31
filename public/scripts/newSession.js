@@ -5,6 +5,7 @@ const progressWarning = document.querySelector(".progressWarning");
 const expiredMessage = document.querySelector(".expiredMessage");
 const regenerateButton = document.getElementById("regenerateButton");
 const closeQrDiv = document.querySelector("#close-qr-div");
+let isPersistentSession = localStorage.getItem("isPersistentSession")
 
 window.addEventListener("load", () => {
   if (sessionStorage.getItem("regenerateSession") === "true") {
@@ -21,24 +22,54 @@ regenerateButton.addEventListener("click", () => {
 
 buttonForNewSession.addEventListener("click", (event) => {
   event.preventDefault();
-
-  /*if (buttonForNewSession.disabled) {
-    console.log("espera ae meu nobre");
-    return;
-  }*/
-
-  buttonForNewSession.disabled = true;
-
-  setTimeout(() => {
-    buttonForNewSession.disabled = false;
-  }, 61000);
-
   validateTextareasEmpty();
   if (validateTextareasEmpty()) {
     compareTextareas();
-    if (compareTextareas()) {
+    if (compareTextareas() && !buttonForNewSession.classList.contains("disabled") && isPersistentSession != "true") {
+      console.log("não está true")
       openQrCode();
       createQrCode();
+    }
+    else if (isPersistentSession && compareTextareas() && !buttonForNewSession.classList.contains("disabled")) {
+      console.log("esta true")
+      user.isPersistentSession=true
+      fetch(`/user/${user.id}/${user.token}/createSession`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+        //signal,
+      })
+        .then((response) => {
+
+          return response.json();
+        }).catch((error) => {
+          console.log(error)
+        })
+        changeSessionButton("disabled");
+        showSucess("Device reconectado!");
+
+
+    }
+    else {
+      fetch(`/user/${user.id}/${user.token}/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+        //signal,
+      })
+        .then((response) => {
+          return response.json()
+
+        }
+        ).catch((error) => {
+          return console.log(error)
+        }
+        )
+      changeSessionButton("enable");
     }
   }
 });
@@ -114,6 +145,8 @@ async function createQrCode() {
       showSucess("Device conectado!");
       closeQrDiv.click();
       changeSessionButton("disabled");
+      localStorage.setItem("isPersistentSession", "true")
+      isPersistentSession=localStorage.isPersistentSession
       socket.close();
     }
   });
