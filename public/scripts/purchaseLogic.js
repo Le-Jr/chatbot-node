@@ -7,13 +7,13 @@ let user = {
 const buyButton = document.querySelectorAll(".buyButton");
 
 
-buyButton.forEach((button) => {
-    button.addEventListener("click", (e) => {
-        const planId = e.target.dataset.plan
-        buyPlan(user.id, planId)
+// buyButton.forEach((button) => {
+//     button.addEventListener("click", (e) => {
+//         const planId = e.target.dataset.plan
+//         buyPlan(user.id, planId)
 
-    })
-})
+//     })
+// })
 
 async function buyPlan(clientId, planId) {
     await fetch(`/user/${clientId}/${planId}/pay`, {

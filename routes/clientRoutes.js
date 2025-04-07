@@ -45,6 +45,6 @@ router.post(
 router.post("/user/:id/:wtj/logout", clientController.logoutSession);
 router.get("/user/:id/:wtj/buy", plansController.renderPlans)
 router.post(
-  "/user/:id/:serviceId/pay",
+  "/user/pay",
   plansController.PaymentWebhookHandler
 );
