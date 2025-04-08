@@ -20,7 +20,7 @@ plans.forEach((brick) => {
         valueProp: "smart_option",
       },
       visual: {
-        buttonBackground: "white",
+        buttonBackground: "black",
         borderRadius: "25px",
       },
     },

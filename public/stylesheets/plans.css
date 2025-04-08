@@ -52,7 +52,7 @@ body {
 }
 
 .plan-card {
-    background-color: rgba(0, 0, 0, 0.09);
+    background-color: var(--primary-color);
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     padding: 2.5rem 2rem;
