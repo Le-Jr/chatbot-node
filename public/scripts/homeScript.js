@@ -5,7 +5,6 @@ const success = document.querySelector(".success-message");
 const regress = document.querySelector(".regress-bar");
 const errorModal = document.querySelector(".error-message");
 const errorMessage = document.querySelector(".error-message");
-const closeMercurio = document.querySelector(".newSessionButton .disabled");
 
 let actionType;
 let errorText;
@@ -34,6 +33,22 @@ function validateTextareasEmpty() {
 }
 
 function compareTextareas() {
+<<<<<<< HEAD
+  if (
+    observedUser.config !== textareas[0].value ||
+    observedUser.faq !== textareas[1].value
+  ) {
+    if (observedUser.config !== textareas[0].value) {
+      errorText = "Salve as alterações do Prompt antes de iniciar";
+      console.log(observedUser.config);
+    } else {
+      errorText = "Salve as alterações da mensagem inicial antes de iniciar";
+    }
+    showError();
+    return false;
+  }
+  return true;
+=======
   return fetch(`/user/${user.id}/${user.token}`, {
     method: "POST",
     headers: {
@@ -67,6 +82,7 @@ function compareTextareas() {
     .catch((error) => {
       console.error("Erro ao fazer a requisição:", error);
     });
+>>>>>>> 254246f85e3a8c30159084704b20600e047cfd10
 }
 
 function openModal(type) {
@@ -120,11 +136,13 @@ function changeSessionButton(mode) {
     mercurio.src = "/assets/mercurio.svg";
     textSessao.style.color = "var(--title-color)";
     textSessao.textContent = "Iniciar MercurioChat";
+    observedUser.isActiveSession = false;
   } else if (mode == "disabled") {
     controlButtonSession.classList.add("disabled");
     mercurio.style.border = "none";
     mercurio.src = "/assets/mercurioWhite.svg";
     textSessao.style.color = "var(--error-color)";
     textSessao.textContent = "Encerrar MercurioChat";
+    observedUser.isActiveSession = true;
   }
 }

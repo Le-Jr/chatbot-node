@@ -9,4 +9,5 @@ export const dataBase = new Sequelize(db.host, db.user, db.password, {
   dialectoptions: {
     ssl: { rejectUnauthorized: true }
   }
+
 });
