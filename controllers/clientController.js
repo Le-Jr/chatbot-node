@@ -40,11 +40,13 @@ export class clientController {
           }
 
 
+<<<<<<< HEAD
           client.onMessage(async (message) => {
             if (!client.connected || typeof client.sendText !== "function") {
               console.error(
                 "Client is not initalized properly or sendText is undefined"
               );
+=======
       if (auth) {
         const currentUser = await Clients.findOne({
           raw: true,
@@ -76,11 +78,13 @@ export class clientController {
           .then((client) => {
             if (!client) {
               console.error("Cliente não foi criado de forma apropriada 🤒");
+>>>>>>> 254246f85e3a8c30159084704b20600e047cfd10
               return;
             }
 
             const phoneNumber = message.from.replace(/\D/g, "").slice(-13);
 
+<<<<<<< HEAD
             try {
               await clientController.sendMessage(
                 message,
@@ -95,6 +99,7 @@ export class clientController {
                 "⚠️ Ocorreu um erro ao processar sua mensagem"
               );
             }
+=======
             client.onMessage(async (message) => {
               if (!client.connected || typeof client.sendText !== "function") {
                 console.error(
@@ -135,6 +140,7 @@ export class clientController {
             res
               .status(500)
               .json({ error: "Failed to initialize WhatsApp client" });
+>>>>>>> 254246f85e3a8c30159084704b20600e047cfd10
           });
 
 
