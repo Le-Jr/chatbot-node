@@ -15,7 +15,6 @@ import { Server } from "socket.io";
 import { ServicePlans } from "./models/ServicePlans.js";
 import { ClientsPlans } from "./models/ClientsPlans.js";
 
-
 const port = 3000;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();

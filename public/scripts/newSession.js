@@ -1,4 +1,6 @@
 const buttonForNewSession = document.querySelector(".newSessionButton");
+const buttonForNewSessionStatus = document.querySelector(".newSessionButton").classList;
+
 const qrCode = document.querySelector(".qrCodeDiv");
 const progressContainer = document.querySelector(".progressContainer");
 const progressWarning = document.querySelector(".progressWarning");
@@ -7,76 +9,55 @@ const regenerateButton = document.getElementById("regenerateButton");
 const closeQrDiv = document.querySelector("#close-qr-div");
 let isPersistentSession = localStorage.getItem("isPersistentSession");
 
-window.addEventListener("load", () => {
-  fetchUserData();
-  if (sessionStorage.getItem("regenerateSession") === "true") {
-    sessionStorage.removeItem("regenerateSession");
-    console.log("Regenerando sessão automaticamente");
-    buttonForNewSession.click();
+
+window.addEventListener("load", async () => {
+  let currentUser = await fetchUserData();
+  if(currentUser.isActiveSession){
+    changeSessionButton("disabled");
   }
 });
 
-regenerateButton.addEventListener("click", () => {
-  openQrCode();
-  createQrCode();
-});
+// regenerateButton.addEventListener("click", () => {
+//   openQrCode("generating qr code");
+//   createQrCode();
+// });
 
 buttonForNewSession.addEventListener("click", async (event) => {
+
   event.preventDefault();
 
-  if (
-    buttonForNewSession.classList.contains("disabled") &&
-    observedUser.isActiveSession === false
-  ) {
-    changeSessionButton("enable");
+  if (!validateTextareasEmpty()) {
+    return console.log("áreas incompletas")
   }
 
-  if (!validateTextareasEmpty()) return;
+  let currentUser = await fetchUserData();
 
-  await fetchUserData();
-  const resultado = await compareTextareas();
-
-  if (!resultado) return;
-
-  const isButtonEnabled = !buttonForNewSession.classList.contains("disabled");
-
-  if (isPersistentSession !== "true" && isButtonEnabled) {
-    console.log("Sessão não persistente, exibindo QR code.");
-    openQrCode();
+  if (compareTextareas() && !buttonForNewSessionStatus.contains("disabled")){
+    console.log(currentUser.isActiveSession)
+    openLoadScreen("genereting qr Code");
     createQrCode();
-  } else if (isPersistentSession === "true" && isButtonEnabled) {
-    console.log("Sessão persistente detectada, conectando automaticamente.");
-
-    user.isPersistentSession = true;
-
-    try {
-      await fetch(`/user/${user.id}/${user.token}/createSession`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
-      changeSessionButton("disabled");
-      showSucess("Device reconectado!");
-    } catch (error) {
-      console.error("Erro ao reconectar sessão persistente:", error);
-    }
-  } else {
-    try {
-      await fetch(`/user/${user.id}/${user.token}/logout`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
-      changeSessionButton("enable");
-    } catch (error) {
-      console.error("Erro ao fazer logout:", error);
-    }
+    return 
   }
-});
+
+  await fetch(`/user/${user.id}/${user.token}/logout`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(user),
+    //signal,
+  })
+    .then((response) => {
+      return console.log(response.json())
+
+    }
+    ).catch((error) => {
+      return console.log(error)
+    }
+    )
+  changeSessionButton("enable");
+}
+);
 
 async function createQrCode() {
   if (loading) {
@@ -95,21 +76,22 @@ async function createQrCode() {
 
   socket.on("connect", async () => {
     user.wsId = socket.id;
-    console.log(user);
-    console.log("Clicou no botão para nova sessão.");
-
-    try {
-      const response = await fetch(`/user/${user.id}/${user.token}/createSession`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
-
-      if (!response.ok) throw new Error("Erro na requisição");
-
-      const data = await response.json();
+    fetch(`/user/${user.id}/${user.token}/createSession`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    })
+      .then((response) => {
+        console.log(" Resposta recebida:", response);
+        if (!response.ok) {
+          throw new Error("Erro na requisição");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data.qrCode);
 
       qrCode.innerHTML = `<img src="${data.qrCode}">`;
       qrCode.style.display = "flex";

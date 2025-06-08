@@ -105,7 +105,6 @@ export class ServerController {
     // await clientController.startClientSession(res,{currentUser})
   }
   static async loggedClient(req, res) {
-    console.log("loguei?")
     res.render("logged");
   }
   static async getClient(req, res) {
@@ -138,7 +137,7 @@ export class ServerController {
     if (auth) {
       next();
     } else {
-      res.status(401).send();
+      res.status(401).render("401");
     }
   }
   static googleAuth = passport.authenticate("google", {
@@ -174,8 +173,6 @@ export class ServerController {
   }
 
   static async generatePrompt(req, res) {
-    console.log("Corpo do form: ", req.body);
-
     const { company_name, segment, tone, type_service, faq, time } = req.body;
 
     const prompt = `
@@ -217,6 +214,36 @@ Seu objetivo é sempre gerar prompts com base nas informações fornecidas, que 
       res.json({ prompt: promptGerado });
     } catch (err) {
       console.error("Erro ao processar a resposta: ", err);
+    }
+  }
+
+  static async getClientId(req, res) {
+    try {
+      // Verifica autenticação via JWT
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res
+          .status(401)
+          .json({ error: "Token de autenticação não fornecido" });
+      }
+
+      const token = authHeader.split(" ")[1];
+
+      // Obtém o client_id do corpo da requisição
+      const client = await Clients.findOne({
+        where: { id: req.body.id }, // Associa ao usuário autenticado
+      });
+
+      if (!client) {
+        return res
+          .status(404)
+          .json({ error: "Cliente não encontrado ou não autorizado" });
+      }
+
+      res.json({ client_id: client.id });
+    } catch (error) {
+      console.error("Erro ao obter client_id:", error);
+      res.status(500).json({ error: "Erro interno do servidor" });
     }
   }
 }

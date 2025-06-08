@@ -1,13 +1,4 @@
-import OpenAI from "openai";
-import "dotenv/config";
-
-const key = process.env["OPEN_AI_KEY"];
-
-const openai = new OpenAI({
-  project: "proj_Q6YIIPWgtYS8O3W9x5Xvxblz",
-  organization: "org-rKAJGiGYPIYjgz6o441DkC7V",
-  apiKey: key,
-});
+import axios from "axios";
 
 // Função para dividir mensagens grandes em partes menores
 function splitMessage(text, maxLength = 100) {
@@ -29,26 +20,33 @@ function splitMessage(text, maxLength = 100) {
 }
 
 // Função para gerar resposta com envio gradual
-export async function generateAnswer(message, sendMessageCallback) {
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4o",
-    max_tokens: 200, // Corrigido para `max_tokens`
-    messages: [{ role: "user", content: message }],
-    temperature: 0.5,
-  });
-
-  const responseText = completion.choices[0].message.content;
-  const responseChunks = splitMessage(responseText, 100); // Divide resposta
-
-  for (let i = 0; i < responseChunks.length; i++) {
-    const chunk = responseChunks[i];
-    await new Promise((resolve) =>
-      setTimeout(() => {
-        sendMessageCallback(chunk); // Envia a parte da mensagem usando o callback
-        resolve(); // Resolve a promise após o envio
-      })
+export async function generateAnswer(message, client_id, sendMessageCallback) {
+  try {
+    const response = await axios.post(
+      "https://api.mercuriochat.com.br/perguntar",
+      {
+        question: message,
+        client_id: String(client_id),
+      }
     );
-  }
 
-  return responseChunks;
+    const responseText = response.data.resposta;
+    console.log(`Resposta API: ${responseText}`);
+    const responseChunks = splitMessage(responseText, 100);
+
+    for (let i = 0; i < responseChunks.length; i++) {
+      const chunk = responseChunks[i];
+      await new Promise((resolve) =>
+        setTimeout(() => {
+          sendMessageCallback(chunk); // Envia a parte da mensagem usando o callback
+          resolve(); // Resolve a promise após o envio
+        }, 0)
+      );
+    }
+
+    return responseChunks;
+  } catch (error) {
+    console.error("Erro ao chamar a API:", error);
+    throw error;
+  }
 }
