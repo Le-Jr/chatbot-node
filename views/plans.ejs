@@ -1,82 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-        }
-
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            width: 300px;
-        }
-
-        .card h2 {
-            margin: 0;
-            color: #333;
-        }
-
-        .card p {
-            margin: 10px 0;
-            color: #666;
-        }
-
-        .card input {
-            width: 100%;
-            padding: 8px;
-            margin-top: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .card button {
-            background-color: #28a745;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-            width: 100%;
-        }
-
-        .card button:hover {
-            background-color: #218838;
-        }
-    </style>
-    <title>Document</title>
+    <title>Planos | MercurioChat</title>
+    <link rel="stylesheet" href="/stylesheets/app.css" />
+    <link rel="stylesheet" href="/stylesheets/plans.css" /> 
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon" />
 </head>
 
 <body>
-    <%plans.forEach((plan)=>{ %>
-        <div class="card">
-            <h2>Plano: <%=plan.name%>
-            </h2>
-            <p><strong>Duração:</strong>
-                <%=plan.days%> dias
-            </p>
-            <p><strong>Preço:</strong> R$ <%=plan.price%>
-            </p>
-            <div id=<%=plan.name%> data-plan=<%=plan.preferenceId%> class="buyButton">
-            </div>
+    <div class="container">
+        <div class="pricing-header">
+            <h2>Planos e Preços</h2>
+            <p>Escolha o plano ideal para o tamanho do seu negócio</p>
         </div>
-        <% console.log(plan) }) %>
+        
+        <div class="plans-container">
+            <% plans.forEach((plan, index) => { %>
+                <div class="plan-card <%= index === 1 ? 'featured-plan' : '' %>">
+                    <% if (index === 1) { %>
+                        <div class="featured-tag">Recomendado</div>
+                    <% } %>
+                    <h3 class="plan-name"><%= plan.name %></h3>
+                    <div class="plan-price">
+                        <div class="price-value"><%= plan.price %></div>
+                        <div class="price-period">Duração: <%= plan.days %> dias</div>
+                    </div>
+                    <div id="<%= plan.name %>" data-plan="<%= plan.preferenceId %>" class="buyButton">
+                  </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <script src="/scripts/purchaseLogic.js"></script>
+    <script src="/scripts/checkoutMercadoPago.js"></script>
 </body>
-<script src="https://sdk.mercadopago.com/js/v2"></script>
-<script src="/scripts/purchaseLogic.js"></script>
-<script src="/scripts/checkoutMercadoPago.js"></script>
-
-
 </html>

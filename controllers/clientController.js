@@ -27,8 +27,9 @@ export class clientController {
             headless: true,
             args: [
               "--no-sandbox",
-              `--user-data-dir=./tokens/${currentUser.id}/chrome-profile`,
+              `--user-data-dir=./tokens/${currentUser.id}/chrome-profile/${Date.now()}`,
             ],
+            
             session: { autoClose: 0 },
           },
           catchQR: async (base64Qr, attempts) => {

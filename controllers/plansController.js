@@ -3,8 +3,13 @@ import { ClientsPlans } from "../models/ClientsPlans.js";
 import { ServicePlans } from "../models/ServicePlans.js";
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { Clients } from "../models/Clients.js";
+import dotenv from "dotenv"
 
-const client = new MercadoPagoConfig({ accessToken: 'TEST-1518391375042209-031618-771d1f999699cb8e15b268d22961eff1-2329930160' });
+dotenv.config();
+
+const ACESS_TOKEN = process.env["ACESS_TOKEN"]
+
+const client = new MercadoPagoConfig({ accessToken: ACESS_TOKEN });
 const preference = new Preference(client);
 let plans = await ServicePlans.findAll({ raw: true })
 
@@ -23,7 +28,7 @@ export class plansController {
             await preference.create({
                 body: {
                     back_urls: {
-                        "success": `https://localhost:3000/user/${user.id}/${user.wtj}`
+                        "success": `https://client.mercuriochat.com.br/user/${user.id}/${user.token}`
                     },
                     items: [
                         {
@@ -70,7 +75,7 @@ export class plansController {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                'Authorization': 'Bearer TEST-1518391375042209-031618-771d1f999699cb8e15b268d22961eff1-2329930160'
+                'Authorization': `Bearer ${ACESS_TOKEN}`
             },
         }).then((response) => {
             return response.json()
