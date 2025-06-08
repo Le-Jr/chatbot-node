@@ -9,10 +9,9 @@ const regenerateButton = document.getElementById("regenerateButton");
 const closeQrDiv = document.querySelector("#close-qr-div");
 let isPersistentSession = localStorage.getItem("isPersistentSession");
 
-
 window.addEventListener("load", async () => {
   let currentUser = await fetchUserData();
-  if(currentUser.isActiveSession){
+  if (currentUser.isActiveSession) {
     changeSessionButton("disabled");
   }
 });
@@ -23,20 +22,19 @@ window.addEventListener("load", async () => {
 // });
 
 buttonForNewSession.addEventListener("click", async (event) => {
-
   event.preventDefault();
 
   if (!validateTextareasEmpty()) {
-    return console.log("áreas incompletas")
+    return console.log("áreas incompletas");
   }
 
   let currentUser = await fetchUserData();
 
-  if (compareTextareas() && !buttonForNewSessionStatus.contains("disabled")){
-    console.log(currentUser.isActiveSession)
-    openLoadScreen("genereting qr Code");
+  if (compareTextareas() && !buttonForNewSessionStatus.contains("disabled")) {
+    console.log(currentUser.isActiveSession);
+    openLoadScreen("generating qr code");
     createQrCode();
-    return 
+    return;
   }
 
   await fetch(`/user/${user.id}/${user.token}/logout`, {
@@ -45,19 +43,15 @@ buttonForNewSession.addEventListener("click", async (event) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(user),
-    //signal,
   })
-    .then((response) => {
-      return console.log(response.json())
-
-    }
-    ).catch((error) => {
-      return console.log(error)
-    }
-    )
+    .then(async (response) => {
+      console.log(await response.json());
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   changeSessionButton("enable");
-}
-);
+});
 
 async function createQrCode() {
   if (loading) {
@@ -84,7 +78,7 @@ async function createQrCode() {
       body: JSON.stringify(user),
     })
       .then((response) => {
-        console.log(" Resposta recebida:", response);
+        console.log("Resposta recebida:", response);
         if (!response.ok) {
           throw new Error("Erro na requisição");
         }
@@ -93,26 +87,27 @@ async function createQrCode() {
       .then((data) => {
         console.log(data.qrCode);
 
-      qrCode.innerHTML = `<img src="${data.qrCode}">`;
-      qrCode.style.display = "flex";
+        qrCode.innerHTML = `<img src="${data.qrCode}" />`;
+        qrCode.style.display = "flex";
 
-      progressContainer.style.display = "block";
-      progressWarning.style.display = "flex";
+        progressContainer.style.display = "block";
+        progressWarning.style.display = "flex";
 
-      if (loading) loading.style.display = "none";
-      if (loadingText) loadingText.style.display = "none";
+        if (loading) loading.style.display = "none";
+        if (loadingText) loadingText.style.display = "none";
 
-      setTimeout(() => {
-        qrCode.innerHTML = "";
-        qrCode.style.display = "none";
-        if (expiredMessage) expiredMessage.style.display = "block";
-        if (regenerateButton) regenerateButton.style.display = "block";
-      }, 60000);
-    } catch (error) {
-      console.error("Erro ao criar sessão com QR Code:", error);
-      if (loading) loading.style.display = "none";
-      if (loadingText) loadingText.style.display = "none";
-    }
+        setTimeout(() => {
+          qrCode.innerHTML = "";
+          qrCode.style.display = "none";
+          if (expiredMessage) expiredMessage.style.display = "block";
+          if (regenerateButton) regenerateButton.style.display = "block";
+        }, 60000);
+      })
+      .catch((error) => {
+        console.error("Erro ao criar sessão com QR Code:", error);
+        if (loading) loading.style.display = "none";
+        if (loadingText) loadingText.style.display = "none";
+      });
   });
 
   socket.on("message", (message) => {
@@ -121,8 +116,8 @@ async function createQrCode() {
       closeQrDiv.click();
       changeSessionButton("disabled");
       localStorage.setItem("isPersistentSession", "true");
-      isPersistentSession = localStorage.isPersistentSession;
-      socket.close();
+      isPersistentSession = localStorage.getItem("isPersistentSession");
+      socket.disconnect();
     }
   });
 }
