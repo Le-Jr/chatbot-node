@@ -18,12 +18,6 @@ export class plansController {
       token: req.params.wtj,
     };
 
-    static async renderPlans(req, res) {
-        const user = {
-            id: req.params.id,
-            token: req.params.wtj,
-        };
-
     const currentPlans = await Promise.all(
       plans.map(async (plan) => {
         await preference
