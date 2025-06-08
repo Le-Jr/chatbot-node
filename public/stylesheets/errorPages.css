@@ -1,0 +1,32 @@
+main {
+  background-color: var(--primary-color);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+section {
+  text-align: center;
+  height: 50vh;
+  width: 50vw;
+}
+
+p {
+  font-size: 1.5rem;
+}
+
+h1 {
+  font-size: 8rem;
+}
+
+@media (max-width: 700px) and (min-width: 300px) {
+  section {
+    width: 80vw;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+}

@@ -46,7 +46,7 @@ async function fetchUserData() {
     }
 
     const data = await response.json();
-    console.log("Resposta do servidor:", data);
+    
     const currentUser = data.currentUser;
 
     if (currentUser.config !== undefined) {
@@ -57,6 +57,7 @@ async function fetchUserData() {
       observedUser.faq = currentUser.faq;
       faqInput.value = currentUser.faq;
     }
+    return data.currentUser
   } catch (error) {
     console.error("Erro ao fazer a requisição:", error);
   }

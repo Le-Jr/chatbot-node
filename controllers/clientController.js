@@ -3,84 +3,83 @@ import { generateAnswer } from "../utils/openai_config.js";
 import { Clients } from "../models/Clients.js";
 import { PreviousContacts } from "../models/PreviousContacts.js";
 import { Wjt } from "../models/Wtj.js";
-import { io } from "../index.js"
+import { io } from "../index.js";
 
-let createdSessions = {}
+let createdSessions = {};
 
 export class clientController {
   static async startClientSession(req, res) {
     try {
-      const auth = req.body.auth || true;
-
-      if (auth) {
-        const currentUser = await Clients.findOne({
-          where: { id: req.body.id },
-        });
-
-        if (req.body.isPersistentSession === true && createdSessions[req.body.id]) {
-          createdSessions[req.body.id].start();
-        }
-
-        await create({
-          session: `whatsapp_bot_${currentUser.id}`,
-          puppeteerOptions: {
-            headless: true,
-            args: [
-              "--no-sandbox",
-              `--user-data-dir=./tokens/${currentUser.id}/chrome-profile`,
-            ],
-            session: { autoClose: 0 },
+      const currentUser = await Clients.findOne({
+        where: {
+          id: req.body.id,
+        },
+      });
+      let currentSession = await create({
+        session: `whatsapp_bot_${currentUser.id}`,
+        puppeteerOptions: {
+          headless: true,
+          args: [
+            "--no-sandbox",
+            `--user-data-dir=./tokens/${currentUser.id}/chrome-profile`,
+          ],
+          session: {
+            autoClose: 0,
           },
-          catchQR: async (base64Qr, attempts) => {
-            currentUser.qrCode = base64Qr;
-            res.json({ qrCode: base64Qr });
-          },
-        })
-          .then((client) => {
-            if (!client) {
-              console.error("Cliente não foi criado de forma apropriada 🤒");
+        },
+        catchQR: async (base64Qr, attempts) => {
+          currentUser.qrCode = base64Qr;
+          res.json({ qrCode: base64Qr });
+        },
+      })
+        .then((client) => {
+          if (!client) {
+            return console.error(
+              "Cliente não foi criado de forma apropriada 🤒"
+            );
+          }
+
+          client.onMessage(async (message) => {
+            if (!client.connected || typeof client.sendText !== "function") {
+              console.error(
+                "Client is not initalized properly or sendText is undefined"
+              );
               return;
             }
 
-            client.onMessage(async (message) => {
-              if (!client.connected || typeof client.sendText !== "function") {
-                console.error("Client is not initialized properly or sendText is undefined");
-                return;
-              }
+            const phoneNumber = message.from.replace(/\D/g, "").slice(-13);
 
-              const phoneNumber = message.from.replace(/\D/g, "").slice(-13);
-
-              try {
-                await clientController.sendMessage(
-                  message,
-                  client,
-                  currentUser,
-                  phoneNumber
-                );
-              } catch (err) {
-                console.error("Error handling message: ", err);
-                client.sendText(
-                  message.from,
-                  "⚠️ Ocorreu um erro ao processar sua mensagem"
-                );
-              }
-            });
-
-            createdSessions[currentUser.id] = client;
-            Clients.update({ isActiveSession: 1 }, { where: { id: currentUser.id } });
-
-            if (req.body.isPersistentSession !== true && req.body.wsId) {
-              const socket = io.sockets.sockets.get(req.body.wsId);
-              if (socket) {
-                socket.emit("message", "usuário escaneou o qr code");
-              }
+            try {
+              await clientController.sendMessage(
+                message,
+                client,
+                currentUser,
+                phoneNumber
+              );
+            } catch (err) {
+              console.error("Error handling message: ", err);
+              client.sendText(
+                message.from,
+                "⚠️ Ocorreu um erro ao processar sua mensagem"
+              );
             }
-          })
-          .catch((error) => {
-            console.error("Error creating client:", error);
-            res.status(500).json({ error: "Failed to initialize WhatsApp client" });
           });
-      }
+
+          createdSessions[currentUser.id] = client;
+
+          Clients.update(
+            { isActiveSession: 1 },
+            { where: { id: currentUser.id } }
+          );
+          const socket = io.sockets.sockets.get(req.body.wsId);
+          socket.emit("message", "usuário escaneou o qr code");
+        })
+        .catch((error) => {
+          console.error("Error creating client:", error);
+          res
+            .status(500)
+            .json({ error: "Failed to initialize WhatsApp client" });
+        });
     } catch (err) {
       console.error("Unexpected error:", err);
       res.status(500).json({ error: "Internal server error" });
@@ -89,19 +88,27 @@ export class clientController {
 
   static async logoutSession(req, res) {
     try {
-      createdSessions[req.body.id].close();
-      await Clients.update({ isActiveSession: 0 }, { where: { id: req.body.id } });
+      await createdSessions[req.body.id].logout();
+      await createdSessions[req.body.id].close();
+      await Clients.update(
+        { isActiveSession: 0 },
+        { where: { id: req.body.id } }
+      );
       res.json({ result: "seção fechada com sucesso" });
-    } catch {
-      res.json({ error: "deu ruim" });
+    } catch (error) {
+      console.log(error);
+      return res.json({ error });
     }
   }
 
   static async isActiveSession(req, res) {
-    if (createdSessions[req.body.id] != '') {
-      res.json({ result: "seção persiste" });
+    const isLogged = createdSessions[req.body.id];
+
+    if (!isLogged) {
+      return res.json({ result: "seção pode ser Aberta" });
     }
-    res.json({ result: "seção pode ser Aberta" });
+
+    return res.json({ result: "seção persiste" });
   }
 
   static async isPreviousContact(client, phoneNumber) {
@@ -121,14 +128,20 @@ export class clientController {
   static async sendMessage(message, client, clientInfos, phoneNumber) {
     if (!message.from.includes("status") && !message.isGroupMsg) {
       const user = await Clients.findOne({ where: { id: clientInfos.id } });
-      const isPreviousContact = await this.isPreviousContact(clientInfos.id, phoneNumber);
-
+      const isPreviousContact = await this.isPreviousContact(
+        clientInfos.id,
+        phoneNumber
+      );
       if (isPreviousContact) {
         const responseChunks = await generateAnswer(
           `${user.config}. lembre-se de responder o mais naturalmente possível, humanos não costumam
            comprimentar ou se despedir em toda interação, evite o uso de listas, adote um formato de escrita com um padrão mais cotidiâno. 
            a seguir temos o contexto da conversa que você já teve: /${isPreviousContact.context} / ${phoneNumber}:${message.body} `,
-          (chunk) => chunk
+          clientInfos.id,
+          (chunk) => {
+            return chunk;
+          }
+
         );
 
         let updatedContext = `${isPreviousContact.context}\n /${phoneNumber}:${message.body}\n`;
@@ -137,8 +150,18 @@ export class clientController {
         });
 
         await PreviousContacts.update(
-          { phoneNumber, context: updatedContext },
-          { where: { phoneNumber, clientId: clientInfos.id } }
+          {
+            phoneNumber: phoneNumber,
+            context: updatedContext,
+            // context: `${isPreviousContact.context}\n ${phoneNumber}:${message.body}\n chatgpt:${gptMessage}\n`,
+          },
+          {
+            where: {
+              phoneNumber: phoneNumber,
+              clientId: clientInfos.id,
+            },
+          }
+
         );
 
         responseChunks.forEach(async (chunk, index) => {
@@ -153,8 +176,6 @@ export class clientController {
         await PreviousContacts.create({ phoneNumber, clientId: clientInfos.id });
         client.sendText(phoneNumber, clientInfos.faq);
       }
-    } else {
-      console.log("é status");
     }
   }
 }
