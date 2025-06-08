@@ -16,7 +16,132 @@ document.querySelectorAll("textarea").forEach((textarea) => {
   });
 });
 
- function validateTextareasEmpty() {
+const getClientId = async () => {
+  try {
+    const storage = localStorage;
+    const full_json = storage.getItem("mercurioChatUser");
+    clean_json = JSON.parse(full_json);
+    const token = clean_json.token;
+    // console.log(`Token do baguio: ${clean_json.token}`);
+    // console.log(`ID DO CABA: ${clean_json.id}`);
+    if (!token) {
+      throw new Error("Token de autenticação não encontrado");
+    }
+
+    const response = await fetch("http://localhost:3000/user/getClientId", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ id: clean_json.id }), // ID do cliente, ajuste conforme necessário
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erro na requisição: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.client_id;
+  } catch (err) {
+    console.error("Erro ao obter client_id:", err);
+    errorText = "Não foi possível obter o client_id";
+    showError();
+    return null;
+  }
+};
+
+const apiTest = async () => {
+  try {
+    const response = await fetch("https://api.mercuriochat.com.br/health", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erro na requisição: ${response.statusText}`);
+    } else {
+      console.log("Deu bom nas requisição");
+    }
+  } catch (err) {
+    console.error("Erro na requisição: ", err);
+  }
+};
+
+apiTest();
+
+const sendConfigFiles = (client_id) => {
+  const send = document.querySelector("#submitFile");
+  const configFile = document.querySelector("#file");
+
+  send.addEventListener("click", async () => {
+    if (!configFile) {
+      showError("Elemento de arquivo não encontrado");
+      return;
+    }
+
+    if (!configFile.files || configFile.files.length === 0) {
+      showError("Por favor, selecione um arquivo PDF ou CSV");
+      return;
+    }
+
+    const file = configFile.files[0];
+    const allowedExtensions = ["pdf", "csv"];
+    const fileExtension = file.name.split(".").pop().toLowerCase();
+    if (!allowedExtensions.includes(fileExtension)) {
+      showError("Apenas arquivos PDF ou CSV são permitidos");
+      return;
+    }
+
+    client_id = await getClientId();
+
+    if (!client_id) {
+      showError("Client ID não fornecido");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("client_id", client_id);
+
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await fetch(
+        "https://api.mercuriochat.com.br/processar",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Erro na requisição: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log("Arquivo enviado com sucesso:", result);
+    } catch (error) {
+      showError("Erro ao enviar o arquivo");
+      console.error("Erro ao enviar o arquivo:", error);
+    }
+  });
+};
+
+const init = async () => {
+  const client_id = await getClientId();
+  if (client_id) {
+    sendConfigFiles(client_id);
+  }
+};
+
+init();
+
+function validateTextareasEmpty() {
   const someEmpty = Array.from(textareas).some(
     (textarea) => textarea.value.trim() === ""
   );
@@ -32,7 +157,7 @@ document.querySelectorAll("textarea").forEach((textarea) => {
   }
 }
 
- function compareTextareas() {
+function compareTextareas() {
   return fetch(`/user/${user.id}/${user.token}`, {
     method: "POST",
     headers: {
@@ -44,7 +169,7 @@ document.querySelectorAll("textarea").forEach((textarea) => {
       if (!response.ok) {
         throw new Error("Erro na requisição");
       }
-      return response.json()
+      return response.json();
     })
     .then((data) => {
       const currentUser = data.currentUser;

@@ -43,8 +43,7 @@ router.post(
   clientController.startClientSession
 );
 router.post("/user/:id/:wtj/logout", clientController.logoutSession);
-router.get("/user/:id/:wtj/buy", plansController.renderPlans)
-router.post(
-  "/user/pay",
-  plansController.PaymentWebhookHandler
-);
+router.get("/user/:id/:wtj/buy", plansController.renderPlans);
+router.post("/user/pay", plansController.PaymentWebhookHandler);
+
+router.post("/user/getClientId", ServerController.getClientId);

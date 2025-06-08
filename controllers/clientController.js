@@ -3,15 +3,13 @@ import { generateAnswer } from "../utils/openai_config.js";
 import { Clients } from "../models/Clients.js";
 import { PreviousContacts } from "../models/PreviousContacts.js";
 import { Wjt } from "../models/Wtj.js";
-import { io } from "../index.js"
+import { io } from "../index.js";
 
-let createdSessions = {}
+let createdSessions = {};
 
 export class clientController {
-
   static async startClientSession(req, res) {
-    try{
-
+    try {
       const currentUser = await Clients.findOne({
         where: {
           id: req.body.id,
@@ -36,10 +34,10 @@ export class clientController {
       })
         .then((client) => {
           if (!client) {
-           return console.error("Cliente não foi criado de forma apropriada 🤒");
-            
+            return console.error(
+              "Cliente não foi criado de forma apropriada 🤒"
+            );
           }
-
 
           client.onMessage(async (message) => {
             if (!client.connected || typeof client.sendText !== "function") {
@@ -67,13 +65,14 @@ export class clientController {
             }
           });
 
+          createdSessions[currentUser.id] = client;
 
-          createdSessions[currentUser.id] = client
-
-          Clients.update({ isActiveSession: 1 }, { where: { id: currentUser.id } })
-          const socket = io.sockets.sockets.get(req.body.wsId)
+          Clients.update(
+            { isActiveSession: 1 },
+            { where: { id: currentUser.id } }
+          );
+          const socket = io.sockets.sockets.get(req.body.wsId);
           socket.emit("message", "usuário escaneou o qr code");
-
         })
         .catch((error) => {
           console.error("Error creating client:", error);
@@ -81,10 +80,6 @@ export class clientController {
             .status(500)
             .json({ error: "Failed to initialize WhatsApp client" });
         });
-
-
-
-
     } catch (err) {
       console.error("Unexpected error:", err);
       res.status(500).json({ error: "Internal server error" });
@@ -92,26 +87,26 @@ export class clientController {
   }
   static async logoutSession(req, res) {
     try {
-      await createdSessions[req.body.id].logout()
-      await createdSessions[req.body.id].close()
-      await Clients.update({ isActiveSession: 0 }, { where: { id: req.body.id } })
-      res.json({ result: "seção fechada com sucesso" })
+      await createdSessions[req.body.id].logout();
+      await createdSessions[req.body.id].close();
+      await Clients.update(
+        { isActiveSession: 0 },
+        { where: { id: req.body.id } }
+      );
+      res.json({ result: "seção fechada com sucesso" });
+    } catch (error) {
+      console.log(error);
+      return res.json({ error });
     }
-    catch(error){
-      console.log(error)
-      return  res.json({ error})
-    }
-  
   }
   static async isActiveSession(req, res) {
-    const isLogged=createdSessions[req.body.id]
+    const isLogged = createdSessions[req.body.id];
 
     if (!isLogged) {
-      return res.json({ result: "seção pode ser Aberta" })
+      return res.json({ result: "seção pode ser Aberta" });
     }
 
-    return res.json({ result: "seção persiste" })
-
+    return res.json({ result: "seção persiste" });
   }
 
   static async isPreviousContact(client, phoneNumber) {
@@ -129,32 +124,27 @@ export class clientController {
   }
 
   static async sendMessage(message, client, clientInfos, phoneNumber) {
-    
     if (!message.from.includes("status") && !message.isGroupMsg) {
-
-      const user = await Clients.findOne({where:{id:clientInfos.id}})
+      const user = await Clients.findOne({ where: { id: clientInfos.id } });
       const isPreviousContact = await this.isPreviousContact(
         clientInfos.id,
         phoneNumber
       );
       if (isPreviousContact) {
-        
         const responseChunks = await generateAnswer(
           `${user.config}. lembre-se de responder o mais naturalmente possível, humanos não costumam
            comprimentar ou se despedir em toda interação, evite o uso de listas, adote um formato de escrita com um padrão mais cotidiâno. 
            a seguir temos o contexto da conversa que você já teve: /${isPreviousContact.context} / ${phoneNumber}:${message.body} `,
-
+          clientInfos.id,
           (chunk) => {
             return chunk;
           }
         );
 
-
         let updatedContext = `${isPreviousContact.context}\n /${phoneNumber}:${message.body}\n`;
         responseChunks.forEach((chunk) => {
           updatedContext += `/chatgpt:${chunk}\n`; // Adiciona cada parte separada ao contexto
         });
-
 
         await PreviousContacts.update(
           {
@@ -168,7 +158,7 @@ export class clientController {
               clientId: clientInfos.id,
             },
           }
-        )
+        );
 
         responseChunks.forEach(async (chunk, index) => {
           await new Promise(
