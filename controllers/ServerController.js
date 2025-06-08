@@ -138,7 +138,7 @@ export class ServerController {
     if (auth) {
       next();
     } else {
-      res.status(401).send();
+      res.status(401).render("401");
     }
   }
   static googleAuth = passport.authenticate("google", {
