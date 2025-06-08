@@ -1,17 +1,21 @@
-import mysql from "mysql";
-import "dotenv/config";
 import { Sequelize } from "sequelize";
-var db = JSON.parse(process.env["db"]);
+import "dotenv/config";
 
-export const dataBase = new Sequelize(db.host, db.user, db.password, {
-  host: db.ip,
-  dialect: "mysql",
-  dialectoptions: {
-    ssl: { rejectUnauthorized: true },
-  },
-});
 
-// Testa a conexão e imprime informações do banco
+export const dataBase = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT || 3306,
+    dialect: "mysql",
+    dialectOptions: {
+      ssl: { rejectUnauthorized: false }
+    },
+    logging: false, // Desativa logs SQL se quiser
+  }
+);
 (async () => {
   try {
     await dataBase.authenticate();
@@ -22,3 +26,4 @@ export const dataBase = new Sequelize(db.host, db.user, db.password, {
     console.error("❌ Erro na conexão com o banco:", error);
   }
 })();
+

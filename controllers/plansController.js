@@ -90,4 +90,5 @@ export class plansController {
       });
     res.json({ result: "plano contratado com sucesso" });
   }
+
 }

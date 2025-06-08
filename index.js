@@ -37,9 +37,9 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/", router);
+;
 
-const clientes = await Clients.findAll({ raw: "true" });
+ const clientes = await Clients.findAll({ raw: "true" });
 
 // clientController.startClientSession(clientes);
 
@@ -48,7 +48,8 @@ export const io = new Server(server);
 
 dataBase.sync().then(() => {
   console.log("DB Sincronizado");
-  server.listen(port, (err) => {
+  app.use("/", router)  
+server.listen(port, (err) => {
     if (err) {
       return console.log("Erro conectando ao servidor");
     }

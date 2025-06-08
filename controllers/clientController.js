@@ -85,6 +85,7 @@ export class clientController {
       res.status(500).json({ error: "Internal server error" });
     }
   }
+
   static async logoutSession(req, res) {
     try {
       await createdSessions[req.body.id].logout();
@@ -99,6 +100,7 @@ export class clientController {
       return res.json({ error });
     }
   }
+
   static async isActiveSession(req, res) {
     const isLogged = createdSessions[req.body.id];
 
@@ -139,11 +141,12 @@ export class clientController {
           (chunk) => {
             return chunk;
           }
+
         );
 
         let updatedContext = `${isPreviousContact.context}\n /${phoneNumber}:${message.body}\n`;
         responseChunks.forEach((chunk) => {
-          updatedContext += `/chatgpt:${chunk}\n`; // Adiciona cada parte separada ao contexto
+          updatedContext += `/chatgpt:${chunk}\n`;
         });
 
         await PreviousContacts.update(
@@ -158,24 +161,19 @@ export class clientController {
               clientId: clientInfos.id,
             },
           }
+
         );
 
         responseChunks.forEach(async (chunk, index) => {
-          await new Promise(
-            (resolve) =>
-              setTimeout(() => {
-                client.sendText(phoneNumber, chunk); // Envia cada parte separada
-                resolve(); // Resolve a promise após o envio
-              }, index * 1000 + 500) // Incrementa o atraso para garantir a ordem
+          await new Promise((resolve) =>
+            setTimeout(() => {
+              client.sendText(phoneNumber, chunk);
+              resolve();
+            }, index * 1000 + 500)
           );
         });
-
-        // client.sendText(message.from, gptMessage);
       } else {
-        await PreviousContacts.create({
-          phoneNumber: phoneNumber,
-          clientId: clientInfos.id,
-        });
+        await PreviousContacts.create({ phoneNumber, clientId: clientInfos.id });
         client.sendText(phoneNumber, clientInfos.faq);
       }
     }
