@@ -28,7 +28,7 @@ const getClientId = async () => {
       throw new Error("Token de autenticação não encontrado");
     }
 
-    const response = await fetch("http://localhost:3000/user/getClientId", {
+    const response = await fetch("https://client.mercuriochat.com.br/user/getClientId", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
