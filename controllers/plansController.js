@@ -56,7 +56,7 @@ export class plansController {
         };
 
         const hasActivePlan = await ClientsPlans.findOne({ where: { clientId: user.id } })
-        console.log(hasActivePlan)
+      
 
         if (hasActivePlan) {
             next()

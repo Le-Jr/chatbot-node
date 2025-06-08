@@ -8,8 +8,9 @@ import { io } from "../index.js"
 let createdSessions = {}
 
 export class clientController {
+
   static async startClientSession(req, res) {
-    try {
+    try{
 
       const currentUser = await Clients.findOne({
         where: {
@@ -35,56 +36,21 @@ export class clientController {
       })
         .then((client) => {
           if (!client) {
-            console.error("Cliente não foi criado de forma apropriada 🤒");
-            return;
+           return console.error("Cliente não foi criado de forma apropriada 🤒");
+            
           }
 
 
-<<<<<<< HEAD
           client.onMessage(async (message) => {
             if (!client.connected || typeof client.sendText !== "function") {
               console.error(
                 "Client is not initalized properly or sendText is undefined"
               );
-=======
-      if (auth) {
-        const currentUser = await Clients.findOne({
-          raw: true,
-          where: {
-            id: req.body.id,
-          },
-        });
-        if (req.body.isPersistentSession == true) {
-          createdSessions[req.body.id].start()
-        }
-
-        let currentSession = await create({
-          session: `whatsapp_bot_${currentUser.id}`,
-          puppeteerOptions: {
-            headless: true,
-            args: [
-              "--no-sandbox",
-              `--user-data-dir=./tokens/${currentUser.id}/chrome-profile`,
-            ],
-            session: {
-              autoClose: 0,
-            },
-          },
-          catchQR: async (base64Qr, attempts) => {
-            currentUser.qrCode = base64Qr;
-            res.json({ qrCode: base64Qr });
-          },
-        })
-          .then((client) => {
-            if (!client) {
-              console.error("Cliente não foi criado de forma apropriada 🤒");
->>>>>>> 254246f85e3a8c30159084704b20600e047cfd10
               return;
             }
 
             const phoneNumber = message.from.replace(/\D/g, "").slice(-13);
 
-<<<<<<< HEAD
             try {
               await clientController.sendMessage(
                 message,
@@ -99,52 +65,11 @@ export class clientController {
                 "⚠️ Ocorreu um erro ao processar sua mensagem"
               );
             }
-=======
-            client.onMessage(async (message) => {
-              if (!client.connected || typeof client.sendText !== "function") {
-                console.error(
-                  "Client is not initalized properly or sendText is undefined"
-                );
-                return;
-              }
-
-              const phoneNumber = message.from.replace(/\D/g, "").slice(-13);
-
-              try {
-                await clientController.sendMessage(
-                  message,
-                  client,
-                  currentUser,
-                  phoneNumber
-                );
-              } catch (err) {
-                console.error("Error handling message: ", err);
-                client.sendText(
-                  message.from,
-                  "⚠️ Ocorreu um erro ao processar sua mensagem"
-                );
-              }
-            });
-
-
-            createdSessions[currentUser.id] = client
-            Clients.update({ isActiveSession: 1 }, { where: { id: currentUser.id } })
-            if (req.body.isPersistentSession != true) {
-              const socket = io.sockets.sockets.get(req.body.wsId)
-              socket.emit("message", "usuário escaneou o qr code");
-            }
-
-          })
-          .catch((error) => {
-            console.error("Error creating client:", error);
-            res
-              .status(500)
-              .json({ error: "Failed to initialize WhatsApp client" });
->>>>>>> 254246f85e3a8c30159084704b20600e047cfd10
           });
 
 
           createdSessions[currentUser.id] = client
+
           Clients.update({ isActiveSession: 1 }, { where: { id: currentUser.id } })
           const socket = io.sockets.sockets.get(req.body.wsId)
           socket.emit("message", "usuário escaneou o qr code");
@@ -167,21 +92,28 @@ export class clientController {
   }
   static async logoutSession(req, res) {
     try {
-      createdSessions[req.body.id].close()
+      await createdSessions[req.body.id].logout()
+      await createdSessions[req.body.id].close()
       await Clients.update({ isActiveSession: 0 }, { where: { id: req.body.id } })
       res.json({ result: "seção fechada com sucesso" })
     }
-    catch {
-      res.json({ error: "deu ruim" })
+    catch(error){
+      console.log(error)
+      return  res.json({ error})
     }
+  
   }
   static async isActiveSession(req, res) {
-    if (createdSessions[req.body.id] != '') {
-      res.json({ result: "seção persiste" })
+    const isLogged=createdSessions[req.body.id]
+
+    if (!isLogged) {
+      return res.json({ result: "seção pode ser Aberta" })
     }
-    res.json({ result: "seção pode ser Aberta" })
+
+    return res.json({ result: "seção persiste" })
 
   }
+
   static async isPreviousContact(client, phoneNumber) {
     const isContact = await PreviousContacts.findAll({
       raw: true,
@@ -197,6 +129,7 @@ export class clientController {
   }
 
   static async sendMessage(message, client, clientInfos, phoneNumber) {
+    
     if (!message.from.includes("status") && !message.isGroupMsg) {
 
       const user = await Clients.findOne({where:{id:clientInfos.id}})
@@ -205,7 +138,7 @@ export class clientController {
         phoneNumber
       );
       if (isPreviousContact) {
-        console.log(clientInfos.config, phoneNumber, message.body)
+        
         const responseChunks = await generateAnswer(
           `${user.config}. lembre-se de responder o mais naturalmente possível, humanos não costumam
            comprimentar ou se despedir em toda interação, evite o uso de listas, adote um formato de escrita com um padrão mais cotidiâno. 
@@ -255,8 +188,6 @@ export class clientController {
         });
         client.sendText(phoneNumber, clientInfos.faq);
       }
-    } else {
-      console.log("é status");
     }
   }
 }

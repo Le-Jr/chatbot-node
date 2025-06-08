@@ -1,5 +1,5 @@
 const loading = document.querySelector(".loading");
-const loadingText = document.getElementById("loadingWarning");
+let loadingText = document.getElementById("loadingWarning");
 const textareas = document.querySelectorAll("textarea");
 const success = document.querySelector(".success-message");
 const regress = document.querySelector(".regress-bar");
@@ -16,7 +16,7 @@ document.querySelectorAll("textarea").forEach((textarea) => {
   });
 });
 
-function validateTextareasEmpty() {
+ function validateTextareasEmpty() {
   const someEmpty = Array.from(textareas).some(
     (textarea) => textarea.value.trim() === ""
   );
@@ -32,23 +32,7 @@ function validateTextareasEmpty() {
   }
 }
 
-function compareTextareas() {
-<<<<<<< HEAD
-  if (
-    observedUser.config !== textareas[0].value ||
-    observedUser.faq !== textareas[1].value
-  ) {
-    if (observedUser.config !== textareas[0].value) {
-      errorText = "Salve as alterações do Prompt antes de iniciar";
-      console.log(observedUser.config);
-    } else {
-      errorText = "Salve as alterações da mensagem inicial antes de iniciar";
-    }
-    showError();
-    return false;
-  }
-  return true;
-=======
+ function compareTextareas() {
   return fetch(`/user/${user.id}/${user.token}`, {
     method: "POST",
     headers: {
@@ -82,7 +66,6 @@ function compareTextareas() {
     .catch((error) => {
       console.error("Erro ao fazer a requisição:", error);
     });
->>>>>>> 254246f85e3a8c30159084704b20600e047cfd10
 }
 
 function openModal(type) {
@@ -100,8 +83,10 @@ function closeModal() {
   document.getElementById("error-message-modal").style.display = "none";
 }
 
-function openQrCode() {
+function openLoadScreen(loadText) {
   document.getElementById("qrCodeModal").style.display = "flex";
+  loadingText = document.getElementById("loadingWarning");
+  loadingText.textContent = loadText;
 }
 
 function showSucess(tipoAcao) {

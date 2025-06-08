@@ -105,7 +105,7 @@ export class ServerController {
     // await clientController.startClientSession(res,{currentUser})
   }
   static async loggedClient(req, res) {
-    console.log("loguei?")
+    
     res.render("logged");
   }
   static async getClient(req, res) {
@@ -174,7 +174,7 @@ export class ServerController {
   }
 
   static async generatePrompt(req, res) {
-    console.log("Corpo do form: ", req.body);
+    
 
     const { company_name, segment, tone, type_service, faq, time } = req.body;
 

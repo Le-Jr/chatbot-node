@@ -1,4 +1,6 @@
 const buttonForNewSession = document.querySelector(".newSessionButton");
+const buttonForNewSessionStatus = document.querySelector(".newSessionButton").classList;
+
 const qrCode = document.querySelector(".qrCodeDiv");
 const progressContainer = document.querySelector(".progressContainer");
 const progressWarning = document.querySelector(".progressWarning");
@@ -7,91 +9,55 @@ const regenerateButton = document.getElementById("regenerateButton");
 const closeQrDiv = document.querySelector("#close-qr-div");
 let isPersistentSession = localStorage.getItem("isPersistentSession")
 
-window.addEventListener("load", () => {
-  fetchUserData();
-  if (sessionStorage.getItem("regenerateSession") === "true") {
-    sessionStorage.removeItem("regenerateSession");
-    console.log("Regenerando sessão automaticamente");
-    buttonForNewSession.click();
+
+window.addEventListener("load", async () => {
+  let currentUser = await fetchUserData();
+  if(currentUser.isActiveSession){
+    changeSessionButton("disabled");
   }
 });
 
-regenerateButton.addEventListener("click", () => {
-  openQrCode();
-  createQrCode();
-});
+// regenerateButton.addEventListener("click", () => {
+//   openQrCode("generating qr code");
+//   createQrCode();
+// });
 
 buttonForNewSession.addEventListener("click", async (event) => {
+
   event.preventDefault();
-<<<<<<< HEAD
 
-  if (
-    buttonForNewSession.classList == "newSessionButton disabled" &&
-    observedUser.isActiveSession == false
-  ) {
-    changeSessionButton("enable");
+  if (!validateTextareasEmpty()) {
+    return console.log("áreas incompletas")
   }
-  if (validateTextareasEmpty()) {
-    console.log("vou chamar hein");
-    await fetchUserData();
-    const resultado = compareTextareas();
-    console.log(observedUser.config + " teste");
 
-    if (resultado) {
-      console.log(resultado);
-=======
-  validateTextareasEmpty();
-  if (validateTextareasEmpty()) {
-    compareTextareas();
-    if (compareTextareas() && !buttonForNewSession.classList.contains("disabled") && isPersistentSession != "true") {
-      console.log("não está true")
->>>>>>> 254246f85e3a8c30159084704b20600e047cfd10
-      openQrCode();
-      createQrCode();
-    }
-    else if (isPersistentSession && compareTextareas() && !buttonForNewSession.classList.contains("disabled")) {
-      console.log("esta true")
-      user.isPersistentSession=true
-      fetch(`/user/${user.id}/${user.token}/createSession`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-        //signal,
-      })
-        .then((response) => {
+  let currentUser = await fetchUserData();
 
-          return response.json();
-        }).catch((error) => {
-          console.log(error)
-        })
-        changeSessionButton("disabled");
-        showSucess("Device reconectado!");
-
-
-    }
-    else {
-      fetch(`/user/${user.id}/${user.token}/logout`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-        //signal,
-      })
-        .then((response) => {
-          return response.json()
-
-        }
-        ).catch((error) => {
-          return console.log(error)
-        }
-        )
-      changeSessionButton("enable");
-    }
+  if (compareTextareas() && !buttonForNewSessionStatus.contains("disabled")){
+    console.log(currentUser.isActiveSession)
+    openLoadScreen("genereting qr Code");
+    createQrCode();
+    return 
   }
-});
+
+  await fetch(`/user/${user.id}/${user.token}/logout`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(user),
+    //signal,
+  })
+    .then((response) => {
+      return console.log(response.json())
+
+    }
+    ).catch((error) => {
+      return console.log(error)
+    }
+    )
+  changeSessionButton("enable");
+}
+);
 
 async function createQrCode() {
   if (loading) {
@@ -109,8 +75,6 @@ async function createQrCode() {
 
   socket.on("connect", (data) => {
     user.wsId = socket.id;
-    console.log(user);
-    console.log("clickei no teu botão 🌚");
     fetch(`/user/${user.id}/${user.token}/createSession`, {
       method: "POST",
       headers: {
@@ -164,7 +128,7 @@ async function createQrCode() {
       closeQrDiv.click();
       changeSessionButton("disabled");
       localStorage.setItem("isPersistentSession", "true")
-      isPersistentSession=localStorage.isPersistentSession
+      isPersistentSession = localStorage.isPersistentSession
       socket.close();
     }
   });
